@@ -1,0 +1,114 @@
+@use '../../styles/variables' as *;
+
+.statistics {
+  .page-header {
+    margin-bottom: $spacing-xl;
+
+    h1 {
+      margin-bottom: $spacing-xs;
+    }
+
+    p {
+      color: $text-secondary;
+      font-size: $font-size-base;
+    }
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $border-light;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+
+  &__value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+}
+
+.ranking-table {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      background-color: $background-gray;
+
+      th {
+        padding: $spacing-md;
+        text-align: left;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: $text-secondary;
+      }
+    }
+
+    tbody {
+      td {
+        padding: $spacing-md;
+        border-top: 1px solid $border-light;
+        font-size: $font-size-base;
+        color: $text-primary;
+
+        &.rank {
+          width: 80px;
+        }
+      }
+
+      tr {
+        transition: background-color $transition-fast;
+
+        &:hover {
+          background-color: $background-gray;
+        }
+      }
+    }
+  }
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-round;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+
+  &--1 {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #000;
+  }
+
+  &--2 {
+    background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+    color: #000;
+  }
+
+  &--3 {
+    background: linear-gradient(135deg, #cd7f32 0%, #e8a87c 100%);
+    color: #fff;
+  }
+}

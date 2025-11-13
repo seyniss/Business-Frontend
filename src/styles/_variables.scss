@@ -1,0 +1,95 @@
+// Colors - Based on Design Files
+$primary: #7FD8BE;
+$primary-dark: #5FC4AA;
+$primary-light: #A3E4D1;
+
+$secondary: #1A3A3F;
+$secondary-light: #2D5157;
+
+$accent-orange: #F4956F;
+$accent-yellow: #F9D571;
+
+$text-primary: #1A1A1A;
+$text-secondary: #666666;
+$text-light: #999999;
+$text-white: #FFFFFF;
+
+$background: #FFFFFF;
+$background-gray: #F8F9FA;
+$background-light: #FAFBFC;
+
+$border: #E5E5E5;
+$border-light: #F0F0F0;
+
+$success: #52C41A;
+$warning: #FAAD14;
+$error: #F5222D;
+$info: #1890FF;
+
+// Gradients
+$gradient-header: linear-gradient(135deg, #1A3A3F 0%, #F4956F 50%, #F9D571 100%);
+$gradient-card: linear-gradient(135deg, $primary-light 0%, $primary 100%);
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+// Border Radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-round: 50%;
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+$shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.15);
+
+// Typography
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-base: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+$font-size-3xl: 32px;
+$font-size-4xl: 40px;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// Breakpoints
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1280px;
+
+// Z-index
+$z-dropdown: 1000;
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-popover: 1060;
+$z-tooltip: 1070;
+
+// Transitions
+$transition-fast: 0.15s ease;
+$transition-base: 0.3s ease;
+$transition-slow: 0.45s ease;
