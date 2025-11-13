@@ -8,7 +8,7 @@
   box-shadow: $shadow-sm;
 
   &__gradient {
-    height: 8px;
+    height: 12px;
     background: $gradient-header;
   }
 
@@ -17,13 +17,13 @@
     align-items: center;
     justify-content: space-between;
     gap: $spacing-xl;
-    padding-top: $spacing-lg;
-    padding-bottom: $spacing-lg;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
   }
 
   &__logo {
     h1 {
-      font-size: $font-size-xl;
+      font-size: $font-size-xxl;
       color: $text-primary;
       font-weight: $font-weight-bold;
     }
@@ -48,11 +48,11 @@
   }
 
   &__nav-link {
-    font-size: $font-size-base;
+    font-size: $font-size-lg;
     font-weight: $font-weight-medium;
     color: $text-secondary;
     transition: color $transition-fast;
-    padding: $spacing-sm $spacing-md;
+    padding: $spacing-md $spacing-lg;
     border-radius: $radius-md;
 
     &:hover {
@@ -79,8 +79,8 @@
   }
 
   &__user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: $radius-round;
     background: $gradient-card;
     color: $text-white;
@@ -88,7 +88,7 @@
     align-items: center;
     justify-content: center;
     font-weight: $font-weight-semibold;
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
   }
 
   &__user-name {

@@ -9,9 +9,6 @@ import ForgotPassword from './pages/auth/ForgotPassword'
 
 // Main Pages
 import Dashboard from './pages/dashboard/Dashboard'
-import HotelList from './pages/hotels/HotelList'
-import HotelCreate from './pages/hotels/HotelCreate'
-import HotelEdit from './pages/hotels/HotelEdit'
 import RoomManagement from './pages/rooms/RoomManagement'
 import Statistics from './pages/statistics/Statistics'
 import ReviewManagement from './pages/reviews/ReviewManagement'
@@ -42,9 +39,6 @@ function App() {
         </ProtectedRoute>
       }>
         <Route index element={<Dashboard />} />
-        <Route path="hotels" element={<HotelList />} />
-        <Route path="hotels/create" element={<HotelCreate />} />
-        <Route path="hotels/edit/:id" element={<HotelEdit />} />
         <Route path="rooms" element={<RoomManagement />} />
         <Route path="statistics" element={<Statistics />} />
         <Route path="reviews" element={<ReviewManagement />} />

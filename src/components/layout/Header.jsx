@@ -23,9 +23,6 @@ const Header = () => {
           <Link to="/" className="header__nav-link">
             대시보드
           </Link>
-          <Link to="/hotels" className="header__nav-link">
-            호텔 관리
-          </Link>
           <Link to="/rooms" className="header__nav-link">
             객실 관리
           </Link>
