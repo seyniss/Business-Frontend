@@ -3,6 +3,19 @@ import api from '../utils/api'
 
 const AuthContext = createContext()
 
+// 개발 모드 플래그 (환경변수 없이 테스트용)
+const DEV_MODE = import.meta.env.DEV
+
+// Mock 사용자 데이터
+const MOCK_USER = {
+  _id: 'mock-user-1',
+  name: '테스트 사업자',
+  email: 'test@business.com',
+  phone: '010-1234-5678',
+  businessName: '테스트 호텔',
+  role: 'business',
+}
+
 const initialState = {
   user: null,
   token: localStorage.getItem('token'),
@@ -65,6 +78,19 @@ export const AuthProvider = ({ children }) => {
   // Check if user is authenticated on mount
   useEffect(() => {
     const loadUser = async () => {
+      // 개발 모드: 자동으로 mock 사용자로 로그인
+      if (DEV_MODE) {
+        dispatch({
+          type: 'AUTH_SUCCESS',
+          payload: {
+            user: MOCK_USER,
+            token: 'mock-token-123',
+          },
+        })
+        return
+      }
+
+      // 프로덕션 모드: 실제 API 호출
       const token = localStorage.getItem('token')
       if (token) {
         try {
@@ -94,6 +120,21 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
+
+      // 개발 모드: Mock 로그인
+      if (DEV_MODE) {
+        await new Promise(resolve => setTimeout(resolve, 500)) // 네트워크 지연 시뮬레이션
+        dispatch({
+          type: 'AUTH_SUCCESS',
+          payload: {
+            user: MOCK_USER,
+            token: 'mock-token-123',
+          },
+        })
+        return { success: true }
+      }
+
+      // 프로덕션 모드: 실제 API 호출
       const response = await api.post('/auth/login', { email, password })
       dispatch({
         type: 'AUTH_SUCCESS',
@@ -117,6 +158,22 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
+
+      // 개발 모드: Mock 회원가입
+      if (DEV_MODE) {
+        await new Promise(resolve => setTimeout(resolve, 500))
+        const newUser = { ...MOCK_USER, ...userData }
+        dispatch({
+          type: 'AUTH_SUCCESS',
+          payload: {
+            user: newUser,
+            token: 'mock-token-123',
+          },
+        })
+        return { success: true }
+      }
+
+      // 프로덕션 모드: 실제 API 호출
       const response = await api.post('/auth/register', userData)
       dispatch({
         type: 'AUTH_SUCCESS',
