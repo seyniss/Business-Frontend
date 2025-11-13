@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables' as *;
 
 .hotels-page,
 .hotel-form-page {
@@ -50,7 +50,7 @@
     height: 200px;
     overflow: hidden;
     border-radius: $radius-lg $radius-lg 0 0;
-    margin: -$spacing-lg -$spacing-lg 0 -$spacing-lg;
+    margin: (-$spacing-lg) (-$spacing-lg) 0 (-$spacing-lg);
 
     img {
       width: 100%;
