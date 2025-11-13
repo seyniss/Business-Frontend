@@ -52,9 +52,25 @@ src/
 npm install
 ```
 
-### 환경 변수 설정
+### 개발 모드 (환경변수 없이 테스트)
 
-`.env` 파일을 생성하고 다음 내용을 추가하세요:
+환경변수 설정 없이 바로 테스트할 수 있습니다!
+
+```bash
+npm run dev
+```
+
+브라우저에서 `http://localhost:3000` 접속
+
+개발 모드에서는:
+- 자동으로 **테스트 사업자** 계정으로 로그인됩니다
+- **Mock 데이터**를 사용하여 모든 기능을 테스트할 수 있습니다
+- 백엔드 API 없이 프론트엔드만으로 동작합니다
+- 실제 서버 연동 없이 UI/UX를 확인할 수 있습니다
+
+### 환경 변수 설정 (프로덕션용)
+
+실제 백엔드 API와 연동하려면 `.env` 파일을 생성하고 다음 내용을 추가하세요:
 
 ```env
 VITE_API_URL=http://localhost:5001
@@ -62,14 +78,6 @@ VITE_API_BASE_PATH=/business/api
 VITE_KAKAO_APP_KEY=your_kakao_app_key
 VITE_S3_BUCKET_URL=https://your-bucket.s3.amazonaws.com
 ```
-
-### 개발 서버 실행
-
-```bash
-npm run dev
-```
-
-브라우저에서 `http://localhost:3000` 접속
 
 ### 빌드
 
