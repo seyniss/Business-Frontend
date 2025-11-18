@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Select from "react-select";
 import StatusBadge from "../../common/StatusBadge";
 
 const STATUS_OPTIONS = [
@@ -8,12 +9,71 @@ const STATUS_OPTIONS = [
   { value: "cancelled", label: "취소" },
 ];
 
+const selectStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    minHeight: "36px",
+    borderRadius: 9999,
+    borderColor: state.isFocused ? "#6366F1" : "rgba(15, 23, 42, 0.15)",
+    boxShadow: "none",
+    paddingLeft: 4,
+    paddingRight: 4,
+    "&:hover": {
+      borderColor: "#6366F1",
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: "0 8px",
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: "#0f172a",
+    fontWeight: 500,
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: "rgba(15, 23, 42, 0.5)",
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    fontSize: "14px",
+    fontWeight: 500,
+    color: state.isSelected ? "#ffffff" : "#0f172a",
+    backgroundColor: state.isSelected
+      ? "#6366F1"
+      : state.isFocused
+        ? "rgba(99, 102, 241, 0.08)"
+        : "#ffffff",
+    cursor: "pointer",
+  }),
+  menu: (provided) => ({
+    ...provided,
+    borderRadius: 16,
+    overflow: "hidden",
+    boxShadow:
+      "0 20px 45px rgba(15, 23, 42, 0.18), 0 10px 18px rgba(15, 23, 42, 0.08)",
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    padding: 0,
+  }),
+  indicatorSeparator: () => ({
+    display: "none",
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    color: "#0f172a",
+    paddingRight: 8,
+  }),
+};
+
 const BusinessBookingTable = ({ bookings, onStatusChange }) => {
   const formatCurrency = (amount) =>
     `${new Intl.NumberFormat("ko-KR").format(amount)}원`;
 
   return (
-    <div className="table-wrapper">
+    <div className="table-wrapper booking-table">
       <table>
         <thead>
           <tr>
@@ -45,17 +105,17 @@ const BusinessBookingTable = ({ bookings, onStatusChange }) => {
               </td>
               <td>
                 <div className="booking-actions">
-                  <select
-                    className="status-select"
-                    value={booking.status}
-                    onChange={(e) => onStatusChange(booking.id, e.target.value)}
-                  >
-                    {STATUS_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    className="booking-status-select"
+                    classNamePrefix="booking-status-select"
+                    isSearchable={false}
+                    options={STATUS_OPTIONS}
+                    value={STATUS_OPTIONS.find(
+                      (option) => option.value === booking.status
+                    )}
+                    onChange={(option) => onStatusChange(booking.id, option.value)}
+                    styles={selectStyles}
+                  />
                   <button
                     type="button"
                     className="btn btn-sm btn-danger"

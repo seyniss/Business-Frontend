@@ -26,6 +26,7 @@ export const mockHotel = {
   totalBookings: 128,
   totalRevenue: 45680000,
   avgRating: 4.5,
+  amenities: ["spa", "wifi", "parking", "twinBed", "couplePc"],
 };
 
 // Mock 객실 목록

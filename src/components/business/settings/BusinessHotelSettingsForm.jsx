@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
 
+const FACILITY_OPTIONS = [
+  { value: "spa", label: "스파/월풀", icon: "🛁" },
+  { value: "wifi", label: "무선인터넷", icon: "📶" },
+  { value: "parking", label: "주차장", icon: "🚗" },
+  { value: "halfBath", label: "반신욕", icon: "✔️" },
+  { value: "mirrorRoom", label: "거울룸", icon: "🪞" },
+  { value: "twinBed", label: "트윈베드", icon: "🛏️" },
+  { value: "karaoke", label: "노래방", icon: "🎤" },
+  { value: "couplePc", label: "커플 PC", icon: "🖥️" },
+  { value: "gamingPc", label: "게이밍PC", icon: "🎮" },
+];
+
 const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -7,9 +19,8 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
     address: "",
     phone: "",
     email: "",
-    checkInTime: "",
-    checkOutTime: "",
     policies: "",
+    amenities: [],
   });
 
   useEffect(() => {
@@ -20,9 +31,8 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
         address: hotel.address || "",
         phone: hotel.phone || "",
         email: hotel.email || "",
-        checkInTime: hotel.checkInTime || "15:00",
-        checkOutTime: hotel.checkOutTime || "11:00",
         policies: hotel.policies || "",
+        amenities: hotel.amenities || [],
       });
     }
   }, [hotel]);
@@ -30,6 +40,18 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const toggleAmenity = (value) => {
+    setFormData((prev) => {
+      const exists = prev.amenities.includes(value);
+      return {
+        ...prev,
+        amenities: exists
+          ? prev.amenities.filter((item) => item !== value)
+          : [...prev.amenities, value],
+      };
+    });
   };
 
   const handleSubmit = (e) => {
@@ -93,28 +115,6 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
         />
       </div>
 
-      <h4>운영 정보</h4>
-
-      <div className="form-group">
-        <label>체크인 시간</label>
-        <input
-          type="time"
-          name="checkInTime"
-          value={formData.checkInTime}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>체크아웃 시간</label>
-        <input
-          type="time"
-          name="checkOutTime"
-          value={formData.checkOutTime}
-          onChange={handleChange}
-        />
-      </div>
-
       <div className="form-group">
         <label>이용 정책</label>
         <textarea
@@ -124,6 +124,27 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
           rows={4}
           placeholder="호텔 이용 정책을 입력하세요..."
         />
+      </div>
+
+      <div className="form-group">
+        <label>부대시설</label>
+        <div className="facility-selector">
+          {FACILITY_OPTIONS.map((facility) => {
+            const selected = formData.amenities.includes(facility.value);
+            return (
+              <button
+                type="button"
+                key={facility.value}
+                className={`facility-item ${selected ? "selected" : ""}`}
+                onClick={() => toggleAmenity(facility.value)}
+                aria-pressed={selected}
+              >
+                <span className="facility-icon">{facility.icon}</span>
+                <span className="facility-label">{facility.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="form-actions">

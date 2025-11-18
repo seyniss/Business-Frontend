@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "./variables.scss" as *;
 
 // 사이드바 레이아웃
@@ -528,6 +529,84 @@
   &.badge-secondary {
     background: rgba(100, 116, 139, 0.1);
     color: $secondary-color;
+  }
+}
+
+// 예약 관리 테이블 커스텀
+.business-booking-list-page {
+  .card {
+    border-radius: 20px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: $shadow-sm;
+  }
+
+  table {
+    th,
+    td {
+      font-size: 15px;
+      color: #0f172a;
+    }
+
+    th {
+      font-weight: 600;
+      color: rgba(15, 23, 42, 0.55);
+    }
+  }
+
+  .booking-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+
+  .booking-status-select {
+    min-width: 120px;
+
+    &__control {
+      border-radius: 9999px;
+      font-size: 14px;
+      background: #f8fafc;
+    }
+
+    &__single-value {
+      color: #0f172a;
+    }
+
+    &__option {
+      font-size: 14px;
+      font-weight: 500;
+      color: #0f172a;
+
+      &--is-focused {
+        background: rgba(99, 102, 241, 0.08);
+      }
+
+      &--is-selected {
+        background: #6366f1;
+        color: #ffffff;
+      }
+    }
+
+    &__menu {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(99, 102, 241, 0.12);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18),
+        0 10px 18px rgba(15, 23, 42, 0.08);
+    }
+  }
+
+  .booking-actions .btn.btn-sm.btn-danger {
+    border-radius: 9999px;
+    font-size: 13px;
+    padding: 6px 18px;
+    background: #e74a3b;
+    border: none;
+    box-shadow: none;
+
+    &:hover {
+      background: color.adjust(#e74a3b, $lightness: -6%);
+    }
   }
 }
 
