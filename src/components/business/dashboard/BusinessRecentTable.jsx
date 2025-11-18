@@ -1,13 +1,11 @@
-const BusinessRecentTable = ({ bookings = [] }) => {
-  const formatCurrency = (amount) => {
-    return "₩" + new Intl.NumberFormat("ko-KR").format(amount);
-  };
+import { Link } from "react-router-dom";
 
+const BusinessRecentTable = ({ bookings = [] }) => {
   const getStatusText = (status) => {
     const statusMap = {
-      confirmed: "예약 확정",
-      pending: "확인 대기",
-      cancelled: "취소됨",
+      confirmed: "확정",
+      pending: "대기",
+      cancelled: "취소",
     };
     return statusMap[status] || status;
   };
@@ -22,40 +20,36 @@ const BusinessRecentTable = ({ bookings = [] }) => {
   };
 
   return (
-    <div className="recent-section">
-      <h4>최근 예약</h4>
-      <div className="card">
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>객실 타입</th>
-                <th>투숙객</th>
-                <th>체크인</th>
-                <th>체크아웃</th>
-                <th>금액</th>
-                <th>상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking.id}>
-                  <td className="text-primary">{booking.roomType}</td>
-                  <td>{booking.guestName}</td>
-                  <td>{booking.checkIn}</td>
-                  <td>{booking.checkOut}</td>
-                  <td>{formatCurrency(booking.amount)}</td>
-                  <td>
-                    <span className={getStatusClass(booking.status)}>
-                      {getStatusText(booking.status)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div className="recent-table">
+      <p className="table-subtitle">최근 예약</p>
+      <table>
+        <thead>
+          <tr>
+            <th>예약번호</th>
+            <th>호텔명</th>
+            <th>고객명</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookings.map((booking) => (
+            <tr key={booking.id}>
+              <td>
+                <Link to={`/business/bookings/${booking.id}`} className="link-primary">
+                  {booking.id}
+                </Link>
+              </td>
+              <td>{booking.hotelName || "서울 그랜드 호텔"}</td>
+              <td>{booking.guestName}</td>
+              <td>
+                <span className={getStatusClass(booking.status)}>
+                  {getStatusText(booking.status)}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

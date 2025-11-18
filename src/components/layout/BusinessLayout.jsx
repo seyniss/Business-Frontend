@@ -1,12 +1,17 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { BusinessAuthContext } from "../../context/BusinessAuthContext";
-import BusinessHeader from "./BusinessHeader";
-import BusinessFooter from "./BusinessFooter";
+import BusinessSidebar from "./BusinessSidebar";
 import "../../styles/index.scss";
 
 const BusinessLayout = () => {
-  const { businessInfo, loading } = useContext(BusinessAuthContext);
+  const { businessInfo, loading, logout } = useContext(BusinessAuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/business/login");
+  };
 
   if (loading) {
     return (
@@ -23,14 +28,22 @@ const BusinessLayout = () => {
   }
 
   return (
-    <div className="business-layout">
-      <BusinessHeader />
-      <main className="business-content">
-        <div className="container">
+    <div className="business-layout-sidebar">
+      <BusinessSidebar />
+      <div className="business-main">
+        <header className="business-topbar">
+          <h2>관리자 대시보드</h2>
+          <div className="topbar-user">
+            <span>{businessInfo?.name || "관리자"}</span>
+            <button onClick={handleLogout} className="btn-logout">
+              로그아웃
+            </button>
+          </div>
+        </header>
+        <main className="business-content">
           <Outlet />
-        </div>
-      </main>
-      <BusinessFooter />
+        </main>
+      </div>
     </div>
   );
 };

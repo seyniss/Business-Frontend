@@ -1,5 +1,126 @@
 @use "./variables.scss" as *;
 
+// 사이드바 레이아웃
+.business-layout-sidebar {
+  display: flex;
+  min-height: 100vh;
+}
+
+.business-sidebar {
+  width: 240px;
+  background: #1e2a38;
+  color: $text-white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+
+  .sidebar-logo {
+    padding: $spacing-lg;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    h1 {
+      font-size: $font-size-lg;
+      font-weight: 700;
+      color: $text-white;
+    }
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: $spacing-md 0;
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      padding: $spacing-md $spacing-lg;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: $font-size-sm;
+      transition: $transition-base;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: $text-white;
+      }
+
+      &.active {
+        background: $primary-color;
+        color: $text-white;
+      }
+
+      .sidebar-nav-icon {
+        font-size: $font-size-base;
+      }
+    }
+  }
+}
+
+.business-main {
+  flex: 1;
+  margin-left: 240px;
+  display: flex;
+  flex-direction: column;
+}
+
+.business-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md $spacing-xl;
+  background: $bg-primary;
+  border-bottom: 1px solid $border-color;
+
+  h2 {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  .topbar-user {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+
+    span {
+      font-size: $font-size-sm;
+      color: $text-secondary;
+    }
+
+    .btn-logout {
+      padding: $spacing-sm $spacing-md;
+      font-size: $font-size-sm;
+      background: transparent;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+      cursor: pointer;
+      transition: $transition-base;
+
+      &:hover {
+        border-color: $danger-color;
+        color: $danger-color;
+      }
+    }
+  }
+}
+
+.business-content {
+  flex: 1;
+  padding: $spacing-xl;
+  background: $bg-secondary;
+}
+
+// 페이지 타이틀
+.page-title {
+  font-size: $font-size-2xl;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: $spacing-xl;
+}
+
 // 사업자 레이아웃
 .business-layout {
   min-height: 100vh;
@@ -189,39 +310,120 @@
     border: 1px solid $border-color;
     box-shadow: $shadow-sm;
 
-    .stat-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+    .stat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: $spacing-md;
+    }
 
-      &.gradient-blue {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      }
-
-      &.gradient-pink {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      }
-
-      &.gradient-mint {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      }
-
-      &.gradient-green {
-        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-      }
+    .stat-icon {
+      font-size: 24px;
     }
 
     .stat-label {
       font-size: $font-size-sm;
       color: $text-secondary;
-      margin-bottom: $spacing-xs;
     }
 
     .stat-value {
       font-size: $font-size-2xl;
       font-weight: 700;
       color: $text-primary;
+      margin-bottom: $spacing-xs;
+    }
+
+    .stat-change {
+      font-size: $font-size-xs;
+
+      &.positive {
+        color: $success-color;
+      }
+
+      &.negative {
+        color: $danger-color;
+      }
+    }
+  }
+}
+
+// 차트 섹션
+.chart-section {
+  background: $bg-primary;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  border: 1px solid $border-color;
+  margin-bottom: $spacing-xl;
+
+  h2 {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+  }
+
+  .chart-placeholder {
+    padding: $spacing-2xl;
+    text-align: center;
+    color: $text-secondary;
+
+    .chart-data {
+      font-size: $font-size-xs;
+      margin-top: $spacing-md;
+      word-break: break-all;
+    }
+  }
+}
+
+// 최근 활동
+.recent-activity {
+  background: $bg-primary;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  border: 1px solid $border-color;
+
+  h2 {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+  }
+}
+
+// 최근 테이블
+.recent-table {
+  .table-subtitle {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin-bottom: $spacing-md;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: $spacing-md;
+      text-align: left;
+      border-bottom: 1px solid $border-color;
+    }
+
+    th {
+      font-size: $font-size-sm;
+      font-weight: 600;
+      color: $text-secondary;
+    }
+
+    td {
+      font-size: $font-size-sm;
+      color: $text-primary;
+    }
+
+    .link-primary {
+      color: $primary-color;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 }
