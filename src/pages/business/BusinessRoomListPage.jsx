@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { mockRoomApi } from "../../api/mockApi";
+import { businessRoomApi } from "../../api/businessRoomApi";
 
 const BusinessRoomListPage = () => {
   const [rooms, setRooms] = useState([]);
@@ -11,7 +11,7 @@ const BusinessRoomListPage = () => {
 
   const fetchRooms = async () => {
     try {
-      const data = await mockRoomApi.getRooms();
+      const data = await businessRoomApi.getRooms();
       setRooms(data);
     } catch (error) {
       console.error("Failed to fetch rooms:", error);

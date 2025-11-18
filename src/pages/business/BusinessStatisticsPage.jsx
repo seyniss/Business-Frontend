@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { mockStatsApi } from "../../api/mockApi";
+import { businessStatsApi } from "../../api/businessStatsApi";
 
 const BusinessStatisticsPage = () => {
   const [stats, setStats] = useState(null);
@@ -11,7 +11,7 @@ const BusinessStatisticsPage = () => {
 
   const fetchStats = async () => {
     try {
-      const data = await mockStatsApi.getStats();
+      const data = await businessStatsApi.getStatistics();
       setStats(data);
     } catch (error) {
       console.error("Failed to fetch stats:", error);

@@ -102,7 +102,21 @@ export const mockRoomApi = {
     return createResponse(newRoom);
   },
 
+  create: async (data) => {
+    await delay();
+    const newRoom = {
+      id: "room-" + Date.now(),
+      ...data,
+    };
+    return createResponse(newRoom);
+  },
+
   updateRoom: async (roomId, data) => {
+    await delay();
+    return createResponse({ id: roomId, ...data });
+  },
+
+  update: async (roomId, data) => {
     await delay();
     return createResponse({ id: roomId, ...data });
   },
@@ -110,6 +124,16 @@ export const mockRoomApi = {
   deleteRoom: async (roomId) => {
     await delay();
     return createResponse({ message: "Room deleted" });
+  },
+
+  delete: async (roomId) => {
+    await delay();
+    return createResponse({ message: "Room deleted" });
+  },
+
+  updateStatus: async (roomId, status) => {
+    await delay();
+    return createResponse({ id: roomId, status });
   },
 };
 
@@ -163,9 +187,28 @@ export const mockReviewApi = {
     return createResponse({ message: "Reply added" });
   },
 
+  reply: async (reviewId, reply) => {
+    await delay();
+    return createResponse({ message: "Reply added" });
+  },
+
   reportReview: async (reviewId, reason) => {
     await delay();
     return createResponse({ message: "Review reported" });
+  },
+
+  report: async (reviewId, reason) => {
+    await delay();
+    return createResponse({ message: "Review reported" });
+  },
+
+  getStats: async () => {
+    await delay();
+    return createResponse({
+      totalReviews: mockReviews.length,
+      averageRating: 3.7,
+      ratingDistribution: { 5: 1, 4: 1, 3: 0, 2: 1, 1: 0 },
+    });
   },
 };
 
@@ -182,5 +225,34 @@ export const mockStatsApi = {
   getStats: async () => {
     await delay();
     return createResponse(mockStats);
+  },
+
+  getStatistics: async (params = {}) => {
+    await delay();
+    return createResponse(mockStats);
+  },
+
+  getRevenueStats: async (period) => {
+    await delay();
+    return createResponse({
+      labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
+      data: [2000000, 2500000, 2200000, 2800000, 3000000, 3200000],
+    });
+  },
+
+  getBookingStats: async (period) => {
+    await delay();
+    return createResponse({
+      labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
+      data: [45, 58, 52, 67, 72, 78],
+    });
+  },
+
+  getOccupancyStats: async (period) => {
+    await delay();
+    return createResponse({
+      labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
+      data: [65, 72, 68, 78, 82, 85],
+    });
   },
 };

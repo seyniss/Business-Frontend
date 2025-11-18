@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { mockReviewApi } from "../../api/mockApi";
+import { businessReviewApi } from "../../api/businessReviewApi";
 
 const BusinessReviewListPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -11,7 +11,7 @@ const BusinessReviewListPage = () => {
 
   const fetchReviews = async () => {
     try {
-      const data = await mockReviewApi.getReviews();
+      const data = await businessReviewApi.getReviews();
       setReviews(data.reviews);
     } catch (error) {
       console.error("Failed to fetch reviews:", error);
