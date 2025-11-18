@@ -60,6 +60,11 @@ export const mockAuthApi = {
       business: { ...mockBusinessUser, ...data },
     });
   },
+
+  updateProfile: async (data) => {
+    await delay();
+    return createResponse({ ...mockBusinessUser, ...data });
+  },
 };
 
 // Mock 호텔 API

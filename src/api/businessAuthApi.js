@@ -45,6 +45,14 @@ const businessAuthApi = {
     }
     return axiosClient.post("/business/auth/signup", data);
   },
+
+  updateProfile: async (data) => {
+    if (USE_MOCK) {
+      return mockAuthApi.updateProfile(data);
+    }
+    return axiosClient.put("/business/auth/profile", data);
+  },
 };
 
+export { businessAuthApi };
 export default businessAuthApi;
