@@ -32,9 +32,9 @@ const BusinessLayout = () => {
       <BusinessSidebar />
       <div className="business-main">
         <header className="business-topbar">
-          <h2>관리자 대시보드</h2>
+          <h2>사업자 대시보드</h2>
           <div className="topbar-user">
-            <span>{businessInfo?.name || "관리자"}</span>
+            <span>{businessInfo?.name || "사업자"}</span>
             <button onClick={handleLogout} className="btn-logout">
               로그아웃
             </button>

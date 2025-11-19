@@ -21,7 +21,7 @@ const BusinessSidebar = () => {
     <aside className="business-sidebar">
       <div className="sidebar-logo">
         <Link to="/business/dashboard">
-          <h1>Hotel Admin</h1>
+          <h1>호텔 사업자</h1>
         </Link>
       </div>
 

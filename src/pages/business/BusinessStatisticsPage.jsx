@@ -107,8 +107,6 @@ const BusinessStatisticsPage = () => {
       ]
     : [];
 
-  const totalMonthlyRevenue = stats?.thisMonth?.revenue || 1;
-
   return (
     <div className="business-statistics-page">
       <div className="page-header">
@@ -207,83 +205,6 @@ const BusinessStatisticsPage = () => {
               />
             </ComposedChart>
           </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="statistics-grid">
-        <div className="card">
-          <div className="card__header">
-            <h3>점유율 & RevPAR</h3>
-          </div>
-          <div className="occupancy-grid">
-            <div>
-              <p className="label">점유율</p>
-              <p className="value">{formatPercent(stats?.occupancy?.rate)}</p>
-              <span className="delta positive">
-                {stats?.occupancy?.change?.rate !== undefined
-                  ? `+${(stats.occupancy.change.rate * 100).toFixed(1)}%`
-                  : "-"}
-              </span>
-            </div>
-            <div>
-              <p className="label">ADR</p>
-              <p className="value">{formatCurrency(stats?.occupancy?.adr)}</p>
-              <span className="delta positive">
-                {stats?.occupancy?.change?.adr !== undefined
-                  ? `+${(stats.occupancy.change.adr * 100).toFixed(1)}%`
-                  : "-"}
-              </span>
-            </div>
-            <div>
-              <p className="label">RevPAR</p>
-              <p className="value">{formatCurrency(stats?.occupancy?.revpar)}</p>
-              <span className="delta positive">
-                {stats?.occupancy?.change?.revpar !== undefined
-                  ? `+${(stats.occupancy.change.revpar * 100).toFixed(1)}%`
-                  : "-"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card__header">
-            <h3>판매 채널 비중</h3>
-          </div>
-          <ul className="distribution-list">
-            {stats?.distribution?.channels.map((channel) => (
-              <li key={channel.name}>
-                <div className="distribution-list__title">
-                  <span>{channel.name}</span>
-                  <span>{(channel.share * 100).toFixed(1)}%</span>
-                </div>
-                <div className="distribution-progress">
-                  <div style={{ width: `${channel.share * 100}%` }} />
-                </div>
-                <span className="value">{formatCurrency(channel.revenue)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="card">
-          <div className="card__header">
-            <h3>객실 타입별 매출</h3>
-          </div>
-          <ul className="distribution-list">
-            {stats?.distribution?.roomTypes.map((room) => (
-              <li key={room.name}>
-                <div className="distribution-list__title">
-                  <span>{room.name}</span>
-                  <span>{room.bookings}건</span>
-                </div>
-                <div className="distribution-progress">
-                  <div style={{ width: `${(room.revenue / totalMonthlyRevenue) * 100}%` }} />
-                </div>
-                <span className="value">{formatCurrency(room.revenue)}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

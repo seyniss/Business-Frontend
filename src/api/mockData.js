@@ -215,15 +215,31 @@ export const mockStats = {
     },
   },
   distribution: {
-    channels: [
-      { name: "직영 웹사이트", revenue: 42000000, share: 0.55 },
-      { name: "OTA", revenue: 25000000, share: 0.33 },
-      { name: "법인/단체", revenue: 8000000, share: 0.12 },
-    ],
     roomTypes: [
       { name: "디럭스 룸", revenue: 24000000, bookings: 120 },
       { name: "스위트 룸", revenue: 32000000, bookings: 86 },
       { name: "스탠다드 룸", revenue: 18000000, bookings: 150 },
+    ],
+  },
+  weeklyBooking: {
+    days: [
+      { day: "월", bookings: 28, percentage: 0.12 },
+      { day: "화", bookings: 32, percentage: 0.14 },
+      { day: "수", bookings: 35, percentage: 0.15 },
+      { day: "목", bookings: 38, percentage: 0.16 },
+      { day: "금", bookings: 45, percentage: 0.19 },
+      { day: "토", bookings: 52, percentage: 0.22 },
+      { day: "일", bookings: 4, percentage: 0.02 },
+    ],
+  },
+  averageStay: {
+    duration: 2.3,
+    change: 0.05,
+    breakdown: [
+      { period: "1박", count: 45, percentage: 0.19 },
+      { period: "2박", count: 120, percentage: 0.51 },
+      { period: "3박", count: 52, percentage: 0.22 },
+      { period: "4박+", count: 17, percentage: 0.08 },
     ],
   },
   trendComparison: {
