@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import BusinessLayout from "../components/layout/BusinessLayout";
 import BusinessLoginPage from "../pages/auth/BusinessLoginPage";
+import BusinessSignupPage from "../pages/auth/BusinessSignupPage";
 import BusinessForgotPasswordPage from "../pages/auth/BusinessForgotPasswordPage";
 import BusinessDashboardPage from "../pages/business/BusinessDashboardPage";
 import BusinessBookingListPage from "../pages/business/BusinessBookingListPage";
@@ -18,6 +19,10 @@ const businessRoutes = [
   {
     path: "/business/login",
     element: <BusinessLoginPage />,
+  },
+  {
+    path: "/business/signup",
+    element: <BusinessSignupPage />,
   },
   {
     path: "/business/forgot-password",

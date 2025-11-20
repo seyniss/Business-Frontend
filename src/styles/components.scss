@@ -343,6 +343,92 @@
   }
 }
 
+// 성공 모달
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-in-out;
+
+  .success-modal-content {
+    background: $bg-primary;
+    padding: $spacing-2xl;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideUp 0.3s ease-out;
+
+    .success-modal-icon {
+      margin-bottom: $spacing-lg;
+      display: flex;
+      justify-content: center;
+      animation: scaleIn 0.3s ease-out 0.1s both;
+    }
+
+    .success-modal-title {
+      font-size: $font-size-xl;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: $spacing-md;
+    }
+
+    .success-modal-message {
+      color: $text-secondary;
+      font-size: $font-size-sm;
+      line-height: 1.6;
+      margin-bottom: $spacing-xl;
+    }
+
+    .success-modal-button {
+      width: 100%;
+      padding: $spacing-md;
+      font-size: $font-size-base;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 // 디테일 섹션
 .detail-section {
   .detail-row {

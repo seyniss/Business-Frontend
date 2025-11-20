@@ -94,6 +94,8 @@ const BusinessLoginPage = () => {
 
           <div className="auth-links">
             <Link to="/business/forgot-password">비밀번호 찾기</Link>
+            <span style={{ margin: "0 0.5rem" }}>|</span>
+            <Link to="/business/signup">회원가입</Link>
           </div>
 
           <div className="auth-divider">

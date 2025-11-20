@@ -15,18 +15,64 @@ const createResponse = (data) => {
   return Promise.resolve(data);
 };
 
+// 회원가입한 사용자 정보 저장소 (localStorage 사용)
+const getRegisteredUsers = () => {
+  const stored = localStorage.getItem("mockRegisteredUsers");
+  return stored ? JSON.parse(stored) : [];
+};
+
+const saveRegisteredUser = (userData) => {
+  const users = getRegisteredUsers();
+  const existingUser = users.find((u) => u.email === userData.email);
+  if (existingUser) {
+    // 이미 존재하는 사용자면 업데이트
+    Object.assign(existingUser, userData);
+  } else {
+    // 새 사용자 추가
+    users.push(userData);
+  }
+  localStorage.setItem("mockRegisteredUsers", JSON.stringify(users));
+};
+
+const findRegisteredUser = (email, password) => {
+  const users = getRegisteredUsers();
+  return users.find((u) => u.email === email && u.password === password);
+};
+
 // Mock 인증 API
 export const mockAuthApi = {
   login: async (credentials) => {
     await delay();
 
+    // 기본 테스트 계정
     if (
       credentials.email === "business@hotel.com" &&
       credentials.password === "business1234"
     ) {
+      const businessInfo = mockBusinessUser;
+      localStorage.setItem("mockCurrentUser", JSON.stringify(businessInfo));
       return createResponse({
         token: "mock-jwt-token-" + Date.now(),
-        business: mockBusinessUser,
+        business: businessInfo,
+      });
+    }
+
+    // 회원가입한 사용자 확인
+    const registeredUser = findRegisteredUser(credentials.email, credentials.password);
+    if (registeredUser) {
+      const { password, ...userWithoutPassword } = registeredUser;
+      const businessInfo = {
+        id: registeredUser.id || "business-" + Date.now(),
+        name: registeredUser.name || registeredUser.email.split("@")[0],
+        email: registeredUser.email,
+        phone: registeredUser.phone,
+        businessNumber: registeredUser.businessNumber,
+        createdAt: registeredUser.createdAt || new Date().toISOString(),
+      };
+      localStorage.setItem("mockCurrentUser", JSON.stringify(businessInfo));
+      return createResponse({
+        token: "mock-jwt-token-" + Date.now(),
+        business: businessInfo,
       });
     }
 
@@ -35,11 +81,18 @@ export const mockAuthApi = {
 
   logout: async () => {
     await delay(200);
+    localStorage.removeItem("mockCurrentUser");
     return createResponse({ message: "Logged out successfully" });
   },
 
   getMyInfo: async () => {
     await delay();
+    // localStorage에서 현재 사용자 정보 가져오기
+    const currentUser = localStorage.getItem("mockCurrentUser");
+    if (currentUser) {
+      return createResponse(JSON.parse(currentUser));
+    }
+    // 없으면 기본 mock 사용자 반환
     return createResponse(mockBusinessUser);
   },
 
@@ -55,9 +108,33 @@ export const mockAuthApi = {
 
   signup: async (data) => {
     await delay();
+
+    // 이미 등록된 이메일인지 확인
+    const users = getRegisteredUsers();
+    const existingUser = users.find((u) => u.email === data.email);
+    if (existingUser) {
+      throw new Error("이미 등록된 이메일입니다.");
+    }
+
+    // 회원가입 정보 저장 (비밀번호 포함)
+    const userData = {
+      id: "business-" + Date.now(),
+      name: data.name || data.email.split("@")[0],
+      email: data.email,
+      password: data.password, // 로그인 시 확인용으로 저장
+      phone: data.phone,
+      businessNumber: data.businessNumber,
+      createdAt: new Date().toISOString(),
+    };
+
+    saveRegisteredUser(userData);
+
+    // 비밀번호 제외하고 반환
+    const { password, ...userWithoutPassword } = userData;
+    localStorage.setItem("mockCurrentUser", JSON.stringify(userWithoutPassword));
     return createResponse({
       token: "mock-jwt-token-" + Date.now(),
-      business: { ...mockBusinessUser, ...data },
+      business: userWithoutPassword,
     });
   },
 
@@ -227,16 +304,30 @@ export const mockReviewApi = {
 
   reply: async (reviewId, reply) => {
     await delay();
+    const review = mockReviews.find((r) => r.id === reviewId);
+    if (review) {
+      review.reply = reply;
+    }
     return createResponse({ message: "Reply added" });
   },
 
   reportReview: async (reviewId, reason) => {
     await delay();
+    const review = mockReviews.find((r) => r.id === reviewId);
+    if (review) {
+      review.status = "reported";
+      review.reportReason = reason;
+    }
     return createResponse({ message: "Review reported" });
   },
 
   report: async (reviewId, reason) => {
     await delay();
+    const review = mockReviews.find((r) => r.id === reviewId);
+    if (review) {
+      review.status = "reported";
+      review.reportReason = reason;
+    }
     return createResponse({ message: "Review reported" });
   },
 
