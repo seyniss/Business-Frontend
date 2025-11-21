@@ -192,7 +192,7 @@ const BusinessStatisticsPage = () => {
                 }
               />
               <Legend />
-              <Bar yAxisId="left" dataKey="revenue" name="매출" fill="#6366F1" radius={[4, 4, 0, 0]} maxBarSize={32} />
+              <Bar yAxisId="left" dataKey="revenue" name="매출" fill="#7FD8BE" radius={[4, 4, 0, 0]} maxBarSize={32} />
               <Line
                 yAxisId="right"
                 type="monotone"

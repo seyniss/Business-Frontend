@@ -14,12 +14,12 @@ const selectStyles = {
     ...provided,
     minHeight: "36px",
     borderRadius: 9999,
-    borderColor: state.isFocused ? "#6366F1" : "rgba(15, 23, 42, 0.15)",
+    borderColor: state.isFocused ? "#7FD8BE" : "rgba(15, 23, 42, 0.15)",
     boxShadow: "none",
     paddingLeft: 4,
     paddingRight: 4,
     "&:hover": {
-      borderColor: "#6366F1",
+      borderColor: "#7FD8BE",
     },
   }),
   valueContainer: (provided) => ({
@@ -41,9 +41,9 @@ const selectStyles = {
     fontWeight: 500,
     color: state.isSelected ? "#ffffff" : "#0f172a",
     backgroundColor: state.isSelected
-      ? "#6366F1"
+      ? "#7FD8BE"
       : state.isFocused
-        ? "rgba(99, 102, 241, 0.08)"
+        ? "rgba(127, 216, 190, 0.08)"
         : "#ffffff",
     cursor: "pointer",
   }),

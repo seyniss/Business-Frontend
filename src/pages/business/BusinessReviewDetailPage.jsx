@@ -31,21 +31,26 @@ const BusinessReviewDetailPage = () => {
   const handleReply = async (reviewId, reply) => {
     try {
       await businessReviewApi.replyToReview(reviewId, reply);
-      alert("답변이 등록되었습니다.");
+      setAlertModal({ isOpen: true, message: "답변이 등록되었습니다.", type: "success" });
       fetchReview();
     } catch (err) {
-      alert("답변 등록에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "답변 등록에 실패했습니다.", type: "error" });
     }
   };
 
   const handleReport = async (reviewId) => {
-    if (window.confirm("이 리뷰를 신고하시겠습니까?")) {
+    setConfirmDialog({ isOpen: true, reviewId });
+  };
+
+  const handleConfirmReport = async () => {
+    if (confirmDialog.reviewId) {
       try {
-        await businessReviewApi.reportReview(reviewId, "부적절한 내용");
-        alert("리뷰가 신고되었습니다.");
+        await businessReviewApi.reportReview(confirmDialog.reviewId, "부적절한 내용");
+        setAlertModal({ isOpen: true, message: "리뷰가 신고되었습니다.", type: "success" });
+        setConfirmDialog({ isOpen: false, reviewId: null });
         fetchReview();
       } catch (err) {
-        alert("신고에 실패했습니다.");
+        setAlertModal({ isOpen: true, message: "신고에 실패했습니다.", type: "error" });
       }
     }
   };
@@ -69,6 +74,21 @@ const BusinessReviewDetailPage = () => {
           onReport={handleReport}
         />
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title="리뷰 신고"
+        message="이 리뷰를 신고하시겠습니까?"
+        onConfirm={handleConfirmReport}
+        onCancel={() => setConfirmDialog({ isOpen: false, reviewId: null })}
+      />
     </div>
   );
 };

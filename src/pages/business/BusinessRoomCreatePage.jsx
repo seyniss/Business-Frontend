@@ -1,17 +1,22 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { businessRoomApi } from "../../api/businessRoomApi";
 import BusinessRoomForm from "../../components/business/rooms/BusinessRoomForm";
+import AlertModal from "../../components/common/AlertModal";
 
 const BusinessRoomCreatePage = () => {
   const navigate = useNavigate();
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
 
   const handleSubmit = async (data) => {
     try {
       await businessRoomApi.createRoom(data);
-      alert("객실이 등록되었습니다.");
-      navigate("/business/rooms");
+      setAlertModal({ isOpen: true, message: "객실이 등록되었습니다.", type: "success" });
+      setTimeout(() => {
+        navigate("/business/rooms");
+      }, 1000);
     } catch (err) {
-      alert("객실 등록에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "객실 등록에 실패했습니다.", type: "error" });
     }
   };
 
@@ -28,6 +33,13 @@ const BusinessRoomCreatePage = () => {
       <div className="card">
         <BusinessRoomForm onSubmit={handleSubmit} onCancel={handleCancel} />
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </div>
   );
 };

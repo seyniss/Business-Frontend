@@ -343,6 +343,98 @@
   }
 }
 
+// 커스텀 모달 (AlertModal, ConfirmDialog)
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-in-out;
+
+  .custom-modal-content {
+    background: $bg-primary;
+    padding: $spacing-2xl;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideUp 0.3s ease-out;
+
+    .custom-modal-icon-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: $spacing-lg;
+      animation: scaleIn 0.3s ease-out 0.1s both;
+
+      svg {
+        display: block;
+      }
+    }
+
+    .custom-modal-title {
+      font-size: $font-size-xl;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0 0 $spacing-md 0;
+    }
+
+    .custom-modal-message {
+      color: $text-secondary;
+      font-size: $font-size-base;
+      line-height: 1.6;
+      margin-bottom: $spacing-xl;
+      white-space: pre-line;
+    }
+
+    .custom-modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: $spacing-sm;
+
+      .custom-modal-button {
+        min-width: 120px;
+        padding: $spacing-md $spacing-xl;
+        font-size: $font-size-base;
+        font-weight: 600;
+        border-radius: 12px;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          opacity: 0.9;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        &.custom-modal-button-outline {
+          background: transparent;
+          border: 2px solid $border-color;
+          color: $text-primary;
+
+          &:hover {
+            background: $bg-secondary;
+            border-color: $text-secondary;
+          }
+        }
+      }
+    }
+  }
+}
+
 // 성공 모달
 .success-modal-overlay {
   position: fixed;

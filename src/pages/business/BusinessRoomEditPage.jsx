@@ -4,6 +4,7 @@ import { businessRoomApi } from "../../api/businessRoomApi";
 import BusinessRoomForm from "../../components/business/rooms/BusinessRoomForm";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import AlertModal from "../../components/common/AlertModal";
 
 const BusinessRoomEditPage = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const BusinessRoomEditPage = () => {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
 
   useEffect(() => {
     fetchRoom();
@@ -31,10 +33,12 @@ const BusinessRoomEditPage = () => {
   const handleSubmit = async (data) => {
     try {
       await businessRoomApi.updateRoom(id, data);
-      alert("객실이 수정되었습니다.");
-      navigate("/business/rooms");
+      setAlertModal({ isOpen: true, message: "객실이 수정되었습니다.", type: "success" });
+      setTimeout(() => {
+        navigate("/business/rooms");
+      }, 1000);
     } catch (err) {
-      alert("객실 수정에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "객실 수정에 실패했습니다.", type: "error" });
     }
   };
 
@@ -54,6 +58,13 @@ const BusinessRoomEditPage = () => {
       <div className="card">
         <BusinessRoomForm room={room} onSubmit={handleSubmit} onCancel={handleCancel} />
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </div>
   );
 };

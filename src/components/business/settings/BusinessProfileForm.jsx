@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import AlertModal from "../../../components/common/AlertModal";
 
 const BusinessProfileForm = ({ profile, onSubmit }) => {
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,7 +31,7 @@ const BusinessProfileForm = ({ profile, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
-      alert("새 비밀번호가 일치하지 않습니다.");
+      setAlertModal({ isOpen: true, message: "새 비밀번호가 일치하지 않습니다.", type: "warning" });
       return;
     }
     onSubmit(formData);
@@ -108,6 +110,13 @@ const BusinessProfileForm = ({ profile, onSubmit }) => {
           저장
         </button>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </form>
   );
 };

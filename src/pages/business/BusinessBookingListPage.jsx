@@ -6,6 +6,7 @@ import Pagination from "../../components/common/Pagination";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import EmptyState from "../../components/common/EmptyState";
+import AlertModal from "../../components/common/AlertModal";
 
 const BusinessBookingListPage = () => {
   const [bookings, setBookings] = useState([]);
@@ -20,6 +21,7 @@ const BusinessBookingListPage = () => {
   const [filterInputs, setFilterInputs] = useState(filters);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
 
   useEffect(() => {
     fetchBookings();
@@ -62,7 +64,7 @@ const BusinessBookingListPage = () => {
       await businessBookingApi.updateBookingStatus(id, status);
       fetchBookings();
     } catch (err) {
-      alert("상태 변경에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "상태 변경에 실패했습니다.", type: "error" });
     }
   };
 
@@ -100,6 +102,13 @@ const BusinessBookingListPage = () => {
           />
         </>
       )}
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </div>
   );
 };

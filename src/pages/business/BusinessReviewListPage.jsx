@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { businessReviewApi } from "../../api/businessReviewApi";
+import AlertModal from "../../components/common/AlertModal";
 
 const BusinessReviewListPage = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [replyModal, setReplyModal] = useState({ open: false, reviewId: null, replyText: "" });
   const [reportModal, setReportModal] = useState({ open: false, reviewId: null, reason: "" });
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
 
   useEffect(() => {
     fetchReviews();
@@ -25,26 +27,26 @@ const BusinessReviewListPage = () => {
   const handleReplySubmit = async (reviewId, replyText) => {
     try {
       await businessReviewApi.replyToReview(reviewId, replyText);
-      alert("답변이 등록되었습니다.");
+      setAlertModal({ isOpen: true, message: "답변이 등록되었습니다.", type: "success" });
       setReplyModal({ open: false, reviewId: null, replyText: "" });
       fetchReviews();
     } catch (error) {
-      alert("답변 등록에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "답변 등록에 실패했습니다.", type: "error" });
     }
   };
 
   const handleReportSubmit = async (reviewId, reason) => {
     if (!reason.trim()) {
-      alert("신고 사유를 입력해주세요.");
+      setAlertModal({ isOpen: true, message: "신고 사유를 입력해주세요.", type: "warning" });
       return;
     }
     try {
       await businessReviewApi.reportReview(reviewId, reason);
-      alert("리뷰가 신고되었습니다.");
+      setAlertModal({ isOpen: true, message: "리뷰가 신고되었습니다.", type: "success" });
       setReportModal({ open: false, reviewId: null, reason: "" });
       fetchReviews();
     } catch (error) {
-      alert("신고 처리에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "신고 처리에 실패했습니다.", type: "error" });
     }
   };
 
@@ -240,6 +242,13 @@ const BusinessReviewListPage = () => {
           </div>
         </div>
       )}
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </div>
   );
 };

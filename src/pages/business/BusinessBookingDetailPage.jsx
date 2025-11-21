@@ -4,6 +4,7 @@ import { businessBookingApi } from "../../api/businessBookingApi";
 import BusinessBookingDetail from "../../components/business/bookings/BusinessBookingDetail";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import AlertModal from "../../components/common/AlertModal";
 
 const BusinessBookingDetailPage = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const BusinessBookingDetailPage = () => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
 
   useEffect(() => {
     fetchBooking();
@@ -33,7 +35,7 @@ const BusinessBookingDetailPage = () => {
       await businessBookingApi.updateBookingStatus(bookingId, status);
       fetchBooking();
     } catch (err) {
-      alert("상태 변경에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "상태 변경에 실패했습니다.", type: "error" });
     }
   };
 
@@ -52,6 +54,13 @@ const BusinessBookingDetailPage = () => {
       <div className="card">
         <BusinessBookingDetail booking={booking} onStatusChange={handleStatusChange} />
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </div>
   );
 };

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { businessRoomApi } from "../../api/businessRoomApi";
 
 const BusinessRoomListPage = () => {
+  const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,12 @@ const BusinessRoomListPage = () => {
           <h1>객실 관리</h1>
           <p>호텔 객실 정보를 관리합니다</p>
         </div>
-        <button className="btn btn-primary">새 객실 추가</button>
+        <button 
+          className="btn btn-primary" 
+          onClick={() => navigate("/business/rooms/create")}
+        >
+          새 객실 추가
+        </button>
       </div>
 
       <div className="card">
@@ -73,7 +80,12 @@ const BusinessRoomListPage = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="btn btn-outline">수정</button>
+                    <Link 
+                      to={`/business/rooms/${room.id}/edit`}
+                      className="btn btn-outline"
+                    >
+                      수정
+                    </Link>
                   </td>
                 </tr>
               ))}

@@ -3,11 +3,13 @@ import { businessHotelApi } from "../../api/businessHotelApi";
 import BusinessHotelSettingsForm from "../../components/business/settings/BusinessHotelSettingsForm";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import AlertModal from "../../components/common/AlertModal";
 
 const BusinessSettingsPage = () => {
   const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
 
   useEffect(() => {
     fetchHotel();
@@ -28,10 +30,10 @@ const BusinessSettingsPage = () => {
   const handleSubmit = async (data) => {
     try {
       await businessHotelApi.updateHotel(data);
-      alert("호텔 정보가 저장되었습니다.");
+      setAlertModal({ isOpen: true, message: "호텔 정보가 저장되었습니다.", type: "success" });
       fetchHotel();
     } catch (err) {
-      alert("저장에 실패했습니다.");
+      setAlertModal({ isOpen: true, message: "저장에 실패했습니다.", type: "error" });
     }
   };
 
@@ -47,6 +49,13 @@ const BusinessSettingsPage = () => {
       <div className="card">
         <BusinessHotelSettingsForm hotel={hotel} onSubmit={handleSubmit} />
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ isOpen: false, message: "", type: "info" })}
+      />
     </div>
   );
 };

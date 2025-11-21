@@ -6,6 +6,7 @@ const BusinessSignupPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     phone: "",
@@ -79,6 +80,19 @@ const BusinessSignupPage = () => {
           {error && <div className="auth-error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">이름</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="enter your name..."
+                required
+              />
+            </div>
+
             <div className="form-group">
               <label htmlFor="email">이메일</label>
               <input
