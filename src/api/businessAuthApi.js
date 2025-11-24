@@ -52,6 +52,20 @@ const businessAuthApi = {
     }
     return axiosClient.put("/business/auth/profile", data);
   },
+
+  kakaoLogin: async (kakaoToken) => {
+    if (USE_MOCK) {
+      return mockAuthApi.kakaoLogin(kakaoToken);
+    }
+    return axiosClient.post("/business/auth/kakao", { access_token: kakaoToken });
+  },
+
+  completeKakaoSignup: async (data) => {
+    if (USE_MOCK) {
+      return mockAuthApi.completeKakaoSignup(data);
+    }
+    return axiosClient.post("/business/auth/kakao/complete", data);
+  },
 };
 
 export { businessAuthApi };

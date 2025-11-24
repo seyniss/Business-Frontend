@@ -142,6 +142,81 @@ export const mockAuthApi = {
     await delay();
     return createResponse({ ...mockBusinessUser, ...data });
   },
+
+  kakaoLogin: async (kakaoToken) => {
+    await delay();
+    // 카카오 로그인 시뮬레이션
+    // 실제로는 카카오 토큰으로 사용자 정보를 가져와서 확인해야 함
+    // 여기서는 간단히 mock 사용자 반환
+    const users = getRegisteredUsers();
+    // 카카오로 가입한 사용자 찾기 (임시로 이메일로 찾기)
+    // 실제로는 카카오 ID로 찾아야 함
+    const kakaoUser = users.find((u) => u.kakaoId);
+    
+    if (kakaoUser) {
+      // 기존 카카오 사용자 - 바로 로그인
+      const { password, ...userWithoutPassword } = kakaoUser;
+      localStorage.setItem("mockCurrentUser", JSON.stringify(userWithoutPassword));
+      return createResponse({
+        token: "mock-jwt-token-" + Date.now(),
+        business: userWithoutPassword,
+        needsAdditionalInfo: false,
+      });
+    } else {
+      // 신규 카카오 사용자 - 추가 정보 필요
+      // 카카오에서 받은 정보로 임시 사용자 생성
+      const tempUser = {
+        id: "kakao-temp-" + Date.now(),
+        kakaoToken: kakaoToken,
+        needsAdditionalInfo: true,
+      };
+      localStorage.setItem("mockKakaoTempUser", JSON.stringify(tempUser));
+      return createResponse({
+        token: null,
+        business: null,
+        needsAdditionalInfo: true,
+        tempUserId: tempUser.id,
+      });
+    }
+  },
+
+  completeKakaoSignup: async (data) => {
+    await delay();
+    const tempUser = localStorage.getItem("mockKakaoTempUser");
+    if (!tempUser) {
+      throw new Error("카카오 로그인 정보를 찾을 수 없습니다.");
+    }
+
+    const tempUserData = JSON.parse(tempUser);
+    
+    // 이미 등록된 사업자 등록번호인지 확인
+    const users = getRegisteredUsers();
+    const existingBusiness = users.find((u) => u.businessNumber === data.businessNumber);
+    if (existingBusiness) {
+      throw new Error("이미 등록된 사업자 등록번호입니다.");
+    }
+
+    // 카카오 사용자 정보 저장
+    const userData = {
+      id: "business-" + Date.now(),
+      name: data.name || "카카오 사용자",
+      email: data.email || `kakao-${Date.now()}@kakao.com`,
+      phone: data.phone,
+      businessNumber: data.businessNumber,
+      kakaoId: tempUserData.id,
+      createdAt: new Date().toISOString(),
+    };
+
+    saveRegisteredUser(userData);
+    localStorage.removeItem("mockKakaoTempUser");
+
+    const { password, ...userWithoutPassword } = userData;
+    localStorage.setItem("mockCurrentUser", JSON.stringify(userWithoutPassword));
+    return createResponse({
+      token: "mock-jwt-token-" + Date.now(),
+      business: userWithoutPassword,
+    });
+  },
 };
 
 // Mock 호텔 API
