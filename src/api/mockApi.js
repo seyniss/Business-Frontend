@@ -46,8 +46,8 @@ export const mockAuthApi = {
 
     // 기본 테스트 계정
     if (
-      credentials.email === "business@hotel.com" &&
-      credentials.password === "business1234"
+      credentials.email === "1234@1234.com" &&
+      credentials.password === "1234"
     ) {
       const businessInfo = mockBusinessUser;
       localStorage.setItem("mockCurrentUser", JSON.stringify(businessInfo));
