@@ -46,9 +46,28 @@ export const BusinessAuthProvider = ({ children }) => {
     setBusinessInfo(data.business);
   };
 
+  const kakaoLogin = async (kakaoToken) => {
+    const data = await businessAuthApi.kakaoLogin(kakaoToken);
+    
+    // 추가 정보가 필요한 경우
+    if (data.needsAdditionalInfo) {
+      return {
+        needsAdditionalInfo: true,
+        tempUserId: data.tempUserId,
+      };
+    }
+    
+    // 바로 로그인 가능한 경우
+    localStorage.setItem("businessToken", data.token);
+    setBusinessInfo(data.business);
+    return {
+      needsAdditionalInfo: false,
+    };
+  };
+
   return (
     <BusinessAuthContext.Provider
-      value={{ businessInfo, loading, login, logout, signup, checkAuth }}
+      value={{ businessInfo, loading, login, logout, signup, checkAuth, kakaoLogin }}
     >
       {children}
     </BusinessAuthContext.Provider>
