@@ -9,7 +9,7 @@ const BusinessKakaoCompletePage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     businessNumber: "",
   });
   const [error, setError] = useState("");
@@ -46,7 +46,7 @@ const BusinessKakaoCompletePage = () => {
 
     // 핸드폰 번호 형식 체크 (XXX-XXXX-XXXX)
     const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
-    if (!phonePattern.test(formData.phone)) {
+    if (!phonePattern.test(formData.phoneNumber)) {
       setError("핸드폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)");
       setLoading(false);
       return;
@@ -63,7 +63,8 @@ const BusinessKakaoCompletePage = () => {
       localStorage.setItem("businessToken", data.token);
       navigate("/business/dashboard");
     } catch (err) {
-      setError(err.message || "회원가입 완료에 실패했습니다.");
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "회원가입 완료에 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -106,12 +107,12 @@ const BusinessKakaoCompletePage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">핸드폰 번호</label>
+              <label htmlFor="phoneNumber">핸드폰 번호</label>
               <input
                 type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
                 onChange={handleChange}
                 placeholder="010-1234-5678"
                 required

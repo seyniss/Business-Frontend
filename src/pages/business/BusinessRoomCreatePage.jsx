@@ -16,7 +16,8 @@ const BusinessRoomCreatePage = () => {
         navigate("/business/rooms");
       }, 1000);
     } catch (err) {
-      setAlertModal({ isOpen: true, message: "객실 등록에 실패했습니다.", type: "error" });
+      const errorMessage = err.response?.data?.message || err.message || "객실 등록에 실패했습니다.";
+      setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
 

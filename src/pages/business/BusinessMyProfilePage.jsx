@@ -21,7 +21,8 @@ const BusinessMyProfilePage = () => {
       const data = await businessAuthApi.getMyInfo();
       setProfile(data);
     } catch (err) {
-      setError(err.message || "프로필 정보를 불러오는데 실패했습니다.");
+      const errorMessage = err.response?.data?.message || err.message || "프로필 정보를 불러오는데 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -33,7 +34,8 @@ const BusinessMyProfilePage = () => {
       setAlertModal({ isOpen: true, message: "프로필이 저장되었습니다.", type: "success" });
       fetchProfile();
     } catch (err) {
-      setAlertModal({ isOpen: true, message: "저장에 실패했습니다.", type: "error" });
+      const errorMessage = err.response?.data?.message || err.message || "저장에 실패했습니다.";
+      setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
 

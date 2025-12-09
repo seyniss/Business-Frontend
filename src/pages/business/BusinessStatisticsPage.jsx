@@ -37,10 +37,13 @@ const BusinessStatisticsPage = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const data = await businessStatsApi.getStatistics();
+      const response = await businessStatsApi.getStatistics();
+      // 백엔드 응답 구조: { data: {...}, message, resultCode } 또는 직접 데이터
+      const data = response?.data || response;
       setStats(data);
     } catch (err) {
-      setError(err.message || "통계를 불러오는데 실패했습니다.");
+      const errorMessage = err.response?.data?.message || err.message || "통계를 불러오는데 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -50,10 +53,13 @@ const BusinessStatisticsPage = () => {
     try {
       setChartLoading(true);
       setPeriod(nextPeriod);
-      const data = await businessStatsApi.getRevenueStats(nextPeriod);
+      const response = await businessStatsApi.getRevenueStats(nextPeriod);
+      // 백엔드 응답 구조: { data: {...}, message, resultCode } 또는 직접 데이터
+      const data = response?.data || response;
       setRevenueTrend(data);
     } catch (err) {
-      setError(err.message || "매출 추이를 불러오는데 실패했습니다.");
+      const errorMessage = err.response?.data?.message || err.message || "매출 추이를 불러오는데 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setChartLoading(false);
     }
@@ -71,37 +77,55 @@ const BusinessStatisticsPage = () => {
     return `${(value * 100).toFixed(1)}%`;
   };
 
+  // revenueTrend 데이터 처리
+  const trendData = revenueTrend?.data || revenueTrend || {};
   const chartData =
-    revenueTrend?.labels.map((label, index) => ({
-      period: label,
-      revenue: revenueTrend.revenue?.[index] ?? 0,
-      bookings: revenueTrend.bookings?.[index] ?? 0,
-    })) || [];
+    trendData?.labels?.length
+      ? trendData.labels.map((label, index) => ({
+          period: label,
+          revenue: trendData.revenue?.[index] ?? 0,
+          bookings: trendData.bookings?.[index] ?? 0,
+        }))
+      : revenueTrend?.labels?.length
+      ? revenueTrend.labels.map((label, index) => ({
+          period: label,
+          revenue: revenueTrend.revenue?.[index] ?? 0,
+          bookings: revenueTrend.bookings?.[index] ?? 0,
+        }))
+      : [];
 
   if (loading && !stats) return <Loader fullScreen />;
   if (error && !stats) return <ErrorMessage message={error} onRetry={fetchStats} />;
+
+  // stats 데이터 안전하게 접근
+  const statsData = stats?.data || stats || {};
+  const today = statsData.today || {};
+  const thisMonth = statsData.thisMonth || {};
 
   const summaryCards = stats
     ? [
         {
           title: "오늘 매출",
-          value: formatCurrency(stats.today.revenue),
-          delta: stats.today.change?.revenue,
+          value: formatCurrency(today.revenue || 0),
+          delta: today.change?.revenue,
         },
         {
           title: "오늘 예약",
-          value: `${stats.today.bookings}건`,
-          delta: stats.today.change?.bookings,
+          value: `${today.bookings || 0}건`,
+          delta: today.change?.bookings,
         },
         {
           title: "이번 달 매출",
-          value: formatCurrency(stats.thisMonth.revenue),
-          delta: stats.thisMonth.change?.revenue,
+          value: formatCurrency(thisMonth.revenue || 0),
+          delta: thisMonth.change?.revenue,
         },
         {
           title: "이번 달 취소율",
-          value: `${((stats.thisMonth.cancellations / stats.thisMonth.bookings) * 100).toFixed(1)}%`,
-          delta: stats.thisMonth.change?.cancellations,
+          value:
+            thisMonth.bookings && thisMonth.bookings > 0
+              ? `${((thisMonth.cancellations || 0) / thisMonth.bookings * 100).toFixed(1)}%`
+              : "0%",
+          delta: thisMonth.change?.cancellations,
           invert: true,
         },
       ]
@@ -154,18 +178,18 @@ const BusinessStatisticsPage = () => {
           </div>
         </div>
 
-        {stats?.trendComparison && (
+        {statsData?.trendComparison && (
           <div className="trend-summary">
             <div>
               <p className="label">이번 기간 매출</p>
-              <p className="value">{formatCurrency(stats.trendComparison.current)}</p>
+              <p className="value">{formatCurrency(statsData.trendComparison.current || 0)}</p>
             </div>
             <div>
               <p className="label">전 기간</p>
-              <p className="value muted">{formatCurrency(stats.trendComparison.previous)}</p>
+              <p className="value muted">{formatCurrency(statsData.trendComparison.previous || 0)}</p>
             </div>
-            <div className={`trend-badge ${stats.trendComparison.yoyChange >= 0 ? "positive" : "negative"}`}>
-              {stats.trendComparison.yoyChange >= 0 ? "▲" : "▼"} {(stats.trendComparison.yoyChange * 100).toFixed(1)}% YoY
+            <div className={`trend-badge ${(statsData.trendComparison.yoyChange || 0) >= 0 ? "positive" : "negative"}`}>
+              {(statsData.trendComparison.yoyChange || 0) >= 0 ? "▲" : "▼"} {((statsData.trendComparison.yoyChange || 0) * 100).toFixed(1)}% YoY
             </div>
           </div>
         )}

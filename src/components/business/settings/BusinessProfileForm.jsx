@@ -6,7 +6,7 @@ const BusinessProfileForm = ({ profile, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -18,7 +18,7 @@ const BusinessProfileForm = ({ profile, onSubmit }) => {
         ...prev,
         name: profile.name || "",
         email: profile.email || "",
-        phone: profile.phone || "",
+        phoneNumber: profile.phoneNumber || "",
       }));
     }
   }, [profile]);
@@ -67,8 +67,8 @@ const BusinessProfileForm = ({ profile, onSubmit }) => {
         <label>연락처</label>
         <input
           type="tel"
-          name="phone"
-          value={formData.phone}
+          name="phoneNumber"
+          value={formData.phoneNumber}
           onChange={handleChange}
         />
       </div>

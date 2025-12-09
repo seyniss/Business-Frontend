@@ -22,7 +22,8 @@ const BusinessReviewDetailPage = () => {
       const data = await businessReviewApi.getReviewById(id);
       setReview(data);
     } catch (err) {
-      setError(err.message || "리뷰 정보를 불러오는데 실패했습니다.");
+      const errorMessage = err.response?.data?.message || err.message || "리뷰 정보를 불러오는데 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -34,7 +35,8 @@ const BusinessReviewDetailPage = () => {
       setAlertModal({ isOpen: true, message: "답변이 등록되었습니다.", type: "success" });
       fetchReview();
     } catch (err) {
-      setAlertModal({ isOpen: true, message: "답변 등록에 실패했습니다.", type: "error" });
+      const errorMessage = err.response?.data?.message || err.message || "답변 등록에 실패했습니다.";
+      setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
 
@@ -50,7 +52,8 @@ const BusinessReviewDetailPage = () => {
         setConfirmDialog({ isOpen: false, reviewId: null });
         fetchReview();
       } catch (err) {
-        setAlertModal({ isOpen: true, message: "신고에 실패했습니다.", type: "error" });
+        const errorMessage = err.response?.data?.message || err.message || "신고에 실패했습니다.";
+        setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
       }
     }
   };

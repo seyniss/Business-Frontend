@@ -15,10 +15,14 @@ const BusinessReviewListPage = () => {
 
   const fetchReviews = async () => {
     try {
-      const data = await businessReviewApi.getReviews();
-      setReviews(data.reviews);
+      const response = await businessReviewApi.getReviews();
+      // 백엔드 응답 구조: { data: { reviews: [...] } } 또는 { reviews: [...] } 또는 { data: [...] }
+      // 백엔드 명세서에 따르면 reviews 배열 직접 반환 가능
+      const reviewsData = response?.data?.reviews || response?.reviews || response?.data || [];
+      setReviews(Array.isArray(reviewsData) ? reviewsData : []);
     } catch (error) {
       console.error("Failed to fetch reviews:", error);
+      setReviews([]);
     } finally {
       setLoading(false);
     }
@@ -31,7 +35,8 @@ const BusinessReviewListPage = () => {
       setReplyModal({ open: false, reviewId: null, replyText: "" });
       fetchReviews();
     } catch (error) {
-      setAlertModal({ isOpen: true, message: "답변 등록에 실패했습니다.", type: "error" });
+      const errorMessage = error.response?.data?.message || error.message || "답변 등록에 실패했습니다.";
+      setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
 
@@ -46,15 +51,20 @@ const BusinessReviewListPage = () => {
       setReportModal({ open: false, reviewId: null, reason: "" });
       fetchReviews();
     } catch (error) {
-      setAlertModal({ isOpen: true, message: "신고 처리에 실패했습니다.", type: "error" });
+      const errorMessage = error.response?.data?.message || error.message || "신고 처리에 실패했습니다.";
+      setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
 
   const getStatusText = (status) => {
+    // 백엔드 상태: active, blocked
+    // 프론트엔드 표시: approved/pending → active, reported → blocked
     const statusMap = {
       approved: "승인됨",
-      reported: "신고됨",
       pending: "대기 중",
+      reported: "신고됨",
+      active: "활성", // 백엔드 상태
+      blocked: "차단됨", // 백엔드 상태
     };
     return statusMap[status] || status;
   };
@@ -83,7 +93,7 @@ const BusinessReviewListPage = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {reviews.map((review) => (
             <div
-              key={review.id}
+              key={review.id || review._id}
               style={{
                 padding: "1rem",
                 border: "1px solid #e2e8f0",
@@ -139,15 +149,16 @@ const BusinessReviewListPage = () => {
                 {!review.reply && (
                   <button
                     className="btn btn-outline"
-                    onClick={() => setReplyModal({ open: true, reviewId: review.id, replyText: "" })}
+                    onClick={() => setReplyModal({ open: true, reviewId: review.id || review._id, replyText: "" })}
                   >
                     답글 작성
                   </button>
                 )}
-                {review.status !== "reported" && (
+                {/* 백엔드 상태: blocked, 프론트엔드 상태: reported */}
+                {review.status !== "reported" && review.status !== "blocked" && (
                   <button
                     className="btn btn-danger"
-                    onClick={() => setReportModal({ open: true, reviewId: review.id, reason: "" })}
+                    onClick={() => setReportModal({ open: true, reviewId: review.id || review._id, reason: "" })}
                   >
                     신고하기
                   </button>

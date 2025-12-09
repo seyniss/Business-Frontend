@@ -22,9 +22,16 @@ const BusinessChartArea = ({ data }) => {
       maximumFractionDigits: 0,
     }).format(value);
 
-  const labels = data?.labels?.length ? data.labels : FALLBACK_CHART.labels;
-  const revenues = data?.revenue?.length ? data.revenue : FALLBACK_CHART.revenue;
-  const bookings = data?.bookings?.length ? data.bookings : FALLBACK_CHART.bookings;
+  // 백엔드 응답 구조에 맞게 데이터 추출
+  // data.data가 있으면 data를 사용, 없으면 data를 직접 사용
+  // 백엔드 응답 구조: { labels: [...], revenue: [...], bookings: [...] }
+  // labels, revenue, bookings는 필수이며 같은 길이의 배열이어야 함
+  const rawChartData = data?.data || data || {};
+  
+  // null 체크 강화: 백엔드에서 null을 반환할 수 있으므로 기본값 사용
+  const labels = rawChartData?.labels?.length ? rawChartData.labels : FALLBACK_CHART.labels;
+  const revenues = rawChartData?.revenue?.length ? rawChartData.revenue : FALLBACK_CHART.revenue;
+  const bookings = rawChartData?.bookings?.length ? rawChartData.bookings : FALLBACK_CHART.bookings;
 
   const chartData = labels.map((label, index) => ({
     month: label,

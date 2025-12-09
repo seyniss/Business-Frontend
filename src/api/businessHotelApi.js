@@ -1,27 +1,35 @@
 import axiosClient from "./axiosClient";
-import { mockHotelApi } from "./mockApi";
-
-const USE_MOCK = import.meta.env.DEV;
 
 export const businessHotelApi = {
   getMyHotel: async () => {
-    if (USE_MOCK) return mockHotelApi.getMyHotel();
     return axiosClient.get("/business/hotel");
   },
 
+  createHotel: async (data) => {
+    return axiosClient.post("/business/hotel", data);
+  },
+
   updateHotel: async (data) => {
-    if (USE_MOCK) return mockHotelApi.updateHotel(data);
     return axiosClient.put("/business/hotel", data);
   },
 
   updateHotelImages: async (images) => {
-    if (USE_MOCK) return mockHotelApi.updateImages(images);
     return axiosClient.put("/business/hotel/images", { images });
   },
 
   getHotelStats: async () => {
-    if (USE_MOCK) return mockHotelApi.getStats();
     return axiosClient.get("/business/hotel/stats");
+  },
+
+  createAmenities: async (lodgingId, amenities) => {
+    return axiosClient.post("/business/amenities", {
+      lodging_id: lodgingId,
+      ...amenities,
+    });
+  },
+
+  updateAmenities: async (amenityId, amenities) => {
+    return axiosClient.put(`/business/amenities/${amenityId}`, amenities);
   },
 };
 

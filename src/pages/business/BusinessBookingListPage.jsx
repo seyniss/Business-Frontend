@@ -30,14 +30,19 @@ const BusinessBookingListPage = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const data = await businessBookingApi.getBookings({
+      const response = await businessBookingApi.getBookings({
         ...filters,
         page: currentPage,
       });
-      setBookings(data.bookings || data);
-      setTotalPages(data.totalPages || 1);
+      // 백엔드 응답 구조: { data: [...] } 배열 직접 반환
+      // 백엔드 명세서에 따르면 data 배열 직접 반환
+      const bookingsData = response?.data || response?.bookings || response || [];
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+      // 페이지네이션 정보는 별도 필드로 전달될 수 있음
+      setTotalPages(response?.totalPages || response?.pagination?.totalPages || 1);
     } catch (err) {
-      setError(err.message || "예약 목록을 불러오는데 실패했습니다.");
+      const errorMessage = err.response?.data?.message || err.message || "예약 목록을 불러오는데 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -64,7 +69,8 @@ const BusinessBookingListPage = () => {
       await businessBookingApi.updateBookingStatus(id, status);
       fetchBookings();
     } catch (err) {
-      setAlertModal({ isOpen: true, message: "상태 변경에 실패했습니다.", type: "error" });
+      const errorMessage = err.response?.data?.message || err.message || "상태 변경에 실패했습니다.";
+      setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
 

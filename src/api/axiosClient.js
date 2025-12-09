@@ -1,11 +1,12 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // 쿠키를 포함하여 요청 전송
 });
 
 // 요청 인터셉터
@@ -14,6 +15,10 @@ axiosClient.interceptors.request.use(
     const token = localStorage.getItem("businessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // 개발 모드에서 요청 데이터 로깅
+    if (import.meta.env.DEV && config.data) {
+      console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, config.data);
     }
     return config;
   },
@@ -32,6 +37,7 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem("businessToken");
       window.location.href = "/business/login";
     }
+    // 에러 객체를 그대로 전달하여 상세 정보를 유지
     return Promise.reject(error);
   }
 );

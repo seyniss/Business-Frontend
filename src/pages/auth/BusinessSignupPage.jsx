@@ -9,7 +9,8 @@ const BusinessSignupPage = () => {
     name: "",
     email: "",
     password: "",
-    phone: "",
+    phoneNumber: "",
+    businessName: "",
     businessNumber: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,7 +50,7 @@ const BusinessSignupPage = () => {
 
     // 핸드폰 번호 형식 체크 (XXX-XXXX-XXXX)
     const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
-    if (!phonePattern.test(formData.phone)) {
+    if (!phonePattern.test(formData.phoneNumber)) {
       setError("핸드폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)");
       return;
     }
@@ -57,17 +58,43 @@ const BusinessSignupPage = () => {
     setLoading(true);
 
     try {
-      await businessAuthApi.signup(formData);
+      // 백엔드가 기대하는 필드명으로 변환
+      const signupData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber,
+        businessName: formData.businessName || "", // 선택사항
+        businessNumber: formData.businessNumber,
+      };
+      
+      // 빈 값 체크
+      if (!signupData.name || !signupData.email || !signupData.password || !signupData.phoneNumber) {
+        setError("모든 필수 항목을 입력해주세요.");
+        setLoading(false);
+        return;
+      }
+      
+      console.log("회원가입 요청 데이터:", signupData);
+      await businessAuthApi.signup(signupData);
       setShowSuccessModal(true);
     } catch (err) {
-      setError(err.message || "회원가입에 실패했습니다.");
+      // 백엔드에서 보내는 에러 메시지 추출
+      const errorMessage = 
+        err.response?.data?.message || 
+        err.response?.data?.error || 
+        err.message || 
+        "회원가입에 실패했습니다.";
+      setError(errorMessage);
       setLoading(false);
+      console.error("회원가입 에러:", err.response?.data || err);
     }
   };
 
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false);
-    navigate("/business/login");
+    // 신규 가입자는 호텔 정보가 없으므로 호텔 설정 페이지로 이동
+    navigate("/business/settings");
   };
 
   return (
@@ -134,16 +161,28 @@ const BusinessSignupPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">핸드폰 번호</label>
+              <label htmlFor="phoneNumber">핸드폰 번호</label>
               <input
                 type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
                 onChange={handleChange}
                 placeholder="010-1234-5678"
                 required
                 pattern="\d{3}-\d{4}-\d{4}"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="businessName">사업자명 (선택)</label>
+              <input
+                type="text"
+                id="businessName"
+                name="businessName"
+                value={formData.businessName}
+                onChange={handleChange}
+                placeholder="사업자명을 입력하세요..."
               />
             </div>
 

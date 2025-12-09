@@ -14,9 +14,10 @@ const BusinessRoomListPage = () => {
   const fetchRooms = async () => {
     try {
       const data = await businessRoomApi.getRooms();
-      setRooms(data);
+      setRooms(data?.data.rooms);
     } catch (error) {
-      console.error("Failed to fetch rooms:", error);
+      const errorMessage = error.response?.data?.message || error.message || "객실 목록을 불러오는데 실패했습니다.";
+      console.error("Failed to fetch rooms:", errorMessage);
     } finally {
       setLoading(false);
     }

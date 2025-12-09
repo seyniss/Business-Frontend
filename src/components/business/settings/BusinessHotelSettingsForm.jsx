@@ -14,10 +14,10 @@ const FACILITY_OPTIONS = [
 
 const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    lodgingName: "",
     description: "",
     address: "",
-    phone: "",
+    phoneNumber: "",
     email: "",
     policies: "",
     amenities: [],
@@ -26,10 +26,10 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
   useEffect(() => {
     if (hotel) {
       setFormData({
-        name: hotel.name || "",
+        lodgingName: hotel.lodgingName || "",
         description: hotel.description || "",
         address: hotel.address || "",
-        phone: hotel.phone || "",
+        phoneNumber: hotel.phoneNumber || "",
         email: hotel.email || "",
         policies: hotel.policies || "",
         amenities: hotel.amenities || [],
@@ -67,8 +67,8 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
         <label>호텔명</label>
         <input
           type="text"
-          name="name"
-          value={formData.name}
+          name="lodgingName"
+          value={formData.lodgingName}
           onChange={handleChange}
           required
         />
@@ -99,8 +99,8 @@ const BusinessHotelSettingsForm = ({ hotel, onSubmit }) => {
         <label>연락처</label>
         <input
           type="tel"
-          name="phone"
-          value={formData.phone}
+          name="phoneNumber"
+          value={formData.phoneNumber}
           onChange={handleChange}
         />
       </div>

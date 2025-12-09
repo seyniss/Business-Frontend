@@ -46,7 +46,8 @@ const BusinessLoginPage = () => {
               navigate("/business/dashboard");
             }
           } catch (err) {
-            setError(err.message || "카카오 로그인에 실패했습니다.");
+            const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "카카오 로그인에 실패했습니다.";
+            setError(errorMessage);
             setLoading(false);
           }
         },
@@ -74,10 +75,20 @@ const BusinessLoginPage = () => {
     setLoading(true);
 
     try {
-      await login(formData);
-      navigate("/business/dashboard");
+      const result = await login(formData);
+      // 호텔 정보가 있으면 대시보드로, 없으면 호텔 설정 페이지로
+      if (result?.hasHotel) {
+        navigate("/business/dashboard");
+      } else {
+        navigate("/business/settings");
+      }
     } catch (err) {
-      setError(err.message || "로그인에 실패했습니다.");
+      const errorMessage = 
+        err.response?.data?.message || 
+        err.response?.data?.error || 
+        err.message || 
+        "로그인에 실패했습니다.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
