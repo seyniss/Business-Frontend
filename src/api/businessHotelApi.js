@@ -9,7 +9,11 @@ export const businessHotelApi = {
     return axiosClient.post("/business/hotel", data);
   },
 
-  updateHotel: async (data) => {
+  updateHotel: async (id, data) => {
+    // ID가 제공되면 /business/hotel/:id 사용, 없으면 /business/hotel 사용 (생성)
+    if (id) {
+      return axiosClient.put(`/business/hotel/${id}`, data);
+    }
     return axiosClient.put("/business/hotel", data);
   },
 
@@ -18,7 +22,8 @@ export const businessHotelApi = {
   },
 
   getHotelStats: async () => {
-    return axiosClient.get("/business/hotel/stats");
+    // 백엔드의 /business/stats/dashboard 엔드포인트 사용
+    return axiosClient.get("/business/stats/dashboard");
   },
 
   createAmenities: async (lodgingId, amenities) => {

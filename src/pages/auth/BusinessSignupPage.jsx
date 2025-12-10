@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { businessAuthApi } from "../../api/businessAuthApi";
+import { extractErrorMessage } from "../../utils/apiUtils";
+import { logger } from "../../utils/logger";
 
 const BusinessSignupPage = () => {
   const navigate = useNavigate();
@@ -75,19 +77,14 @@ const BusinessSignupPage = () => {
         return;
       }
       
-      console.log("회원가입 요청 데이터:", signupData);
+      logger.log("회원가입 요청 데이터:", signupData);
       await businessAuthApi.signup(signupData);
       setShowSuccessModal(true);
     } catch (err) {
-      // 백엔드에서 보내는 에러 메시지 추출
-      const errorMessage = 
-        err.response?.data?.message || 
-        err.response?.data?.error || 
-        err.message || 
-        "회원가입에 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "회원가입에 실패했습니다.");
       setError(errorMessage);
       setLoading(false);
-      console.error("회원가입 에러:", err.response?.data || err);
+      logger.error("회원가입 에러:", err.response?.data || err);
     }
   };
 

@@ -5,6 +5,7 @@ import BusinessRoomForm from "../../components/business/rooms/BusinessRoomForm";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import AlertModal from "../../components/common/AlertModal";
+import { extractApiData, extractErrorMessage } from "../../utils/apiUtils";
 
 const BusinessRoomEditPage = () => {
   const { id } = useParams();
@@ -21,10 +22,11 @@ const BusinessRoomEditPage = () => {
   const fetchRoom = async () => {
     try {
       setLoading(true);
-      const data = await businessRoomApi.getRoomById(id);
-      setRoom(data);
+      const response = await businessRoomApi.getRoomById(id);
+      const roomData = extractApiData(response);
+      setRoom(roomData);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "객실 정보를 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "객실 정보를 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -39,7 +41,7 @@ const BusinessRoomEditPage = () => {
         navigate("/business/rooms");
       }, 1000);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "객실 수정에 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "객실 수정에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };

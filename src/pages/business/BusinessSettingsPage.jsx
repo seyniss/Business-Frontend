@@ -4,6 +4,8 @@ import BusinessHotelSettingsForm from "../../components/business/settings/Busine
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import AlertModal from "../../components/common/AlertModal";
+import { extractApiData, extractErrorMessage } from "../../utils/apiUtils";
+import { logger } from "../../utils/logger";
 
 const BusinessSettingsPage = () => {
   const [hotel, setHotel] = useState(null);
@@ -19,9 +21,7 @@ const BusinessSettingsPage = () => {
     try {
       setLoading(true);
       const response = await businessHotelApi.getMyHotel();
-      // 백엔드 응답 구조: { data: {...} | [...], message, resultCode }
-      // 백엔드 명세서에 따르면 배열 또는 단일 객체 반환 가능
-      const hotelData = response?.data || response;
+      const hotelData = extractApiData(response);
       // 배열인 경우 첫 번째 호텔 사용 (백엔드가 배열로 반환할 수 있음)
       const hotel = Array.isArray(hotelData) ? hotelData[0] : hotelData;
       setHotel(hotel);
@@ -30,7 +30,7 @@ const BusinessSettingsPage = () => {
       if (err.response?.status === 404) {
         setHotel(null);
       } else {
-        const errorMessage = err.response?.data?.message || err.message || "호텔 정보를 불러오는데 실패했습니다.";
+        const errorMessage = extractErrorMessage(err, "호텔 정보를 불러오는데 실패했습니다.");
         setError(errorMessage);
       }
     } finally {
@@ -96,7 +96,7 @@ const BusinessSettingsPage = () => {
         city: hotel?.city || "",
       };
       
-      console.log("호텔 업데이트 요청 데이터:", hotelData);
+      logger.log("호텔 업데이트 요청 데이터:", hotelData);
       
       let lodgingId;
       
@@ -105,15 +105,15 @@ const BusinessSettingsPage = () => {
         // 신규 호텔 생성 (amenities 제외)
         try {
           const createResponse = await businessHotelApi.createHotel(hotelData);
-          const createdHotel = createResponse?.data || createResponse;
+          const createdHotel = extractApiData(createResponse);
           lodgingId = createdHotel._id || createdHotel.id;
-          console.log("호텔 생성 완료, lodgingId:", lodgingId);
+          logger.log("호텔 생성 완료, lodgingId:", lodgingId);
         } catch (createErr) {
           // 좌표 변환 실패 등의 에러 처리
-          const errorMsg = createErr.response?.data?.message || createErr.message;
+          const errorMsg = extractErrorMessage(createErr);
           if (errorMsg?.includes("좌표 변환 실패") || errorMsg?.includes("KAKAO_MAP_API_KEY")) {
             // 좌표 변환 실패는 경고로 처리하고 계속 진행 시도
-            console.warn("좌표 변환 실패 (백엔드 설정 필요):", errorMsg);
+            logger.warn("좌표 변환 실패 (백엔드 설정 필요):", errorMsg);
             // 백엔드가 좌표 없이도 호텔 생성을 허용하는지 확인 필요
             // 일단 에러를 다시 throw하여 사용자에게 알림
             throw createErr;
@@ -124,43 +124,39 @@ const BusinessSettingsPage = () => {
       } else {
         // 기존 호텔 업데이트
         lodgingId = hotel._id || hotel.id;
-        await businessHotelApi.updateHotel(hotelData);
-        console.log("호텔 업데이트 완료");
+        await businessHotelApi.updateHotel(lodgingId, hotelData);
+        logger.log("호텔 업데이트 완료");
       }
       
       // amenities는 별도로 생성/업데이트
       if (lodgingId) {
         try {
           await businessHotelApi.createAmenities(lodgingId, amenitiesMap);
-          console.log("편의시설 생성/업데이트 완료");
+          logger.log("편의시설 생성/업데이트 완료");
         } catch (amenityErr) {
           // amenities 생성 실패는 경고만 표시 (호텔은 이미 생성됨)
-          console.warn("편의시설 저장 실패:", amenityErr);
+          logger.warn("편의시설 저장 실패:", amenityErr);
         }
       }
       
       setAlertModal({ isOpen: true, message: "호텔 정보가 저장되었습니다.", type: "success" });
       fetchHotel();
     } catch (err) {
-      let errorMessage = 
-        err.response?.data?.message || 
-        err.response?.data?.error || 
-        err.message || 
-        "저장에 실패했습니다.";
+      let errorMessage = extractErrorMessage(err, "저장에 실패했습니다.");
       
       // 좌표 변환 실패 에러인 경우 사용자 친화적인 메시지로 변경
       if (errorMessage.includes("KAKAO_MAP_API_KEY") || errorMessage.includes("좌표 변환 실패")) {
         errorMessage = "호텔 등록 중 좌표 변환에 실패했습니다. 백엔드 관리자에게 카카오 맵 API 키 설정을 요청해주세요. 호텔 정보는 저장되었을 수 있습니다.";
       }
       
-      console.error("호텔 업데이트 에러:", err.response?.data || err);
+      logger.error("호텔 업데이트 에러:", err.response?.data || err);
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
       
       // 에러 발생해도 호텔 정보 새로고침 시도 (부분적으로 저장되었을 수 있음)
       try {
         await fetchHotel();
       } catch (fetchErr) {
-        console.error("호텔 정보 새로고침 실패:", fetchErr);
+        logger.error("호텔 정보 새로고침 실패:", fetchErr);
       }
     }
   };

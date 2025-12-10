@@ -7,6 +7,7 @@ import BusinessChartArea from "../../components/business/dashboard/BusinessChart
 import BusinessRecentTable from "../../components/business/dashboard/BusinessRecentTable";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import { extractApiData, extractApiArray, extractErrorMessage } from "../../utils/apiUtils";
 
 const BusinessDashboardPage = () => {
   const navigate = useNavigate();
@@ -42,19 +43,10 @@ const BusinessDashboardPage = () => {
       
       // 호텔 정보가 있으면 대시보드 데이터 가져오기
       const response = await businessStatsApi.getDashboardStats();
-      // 백엔드 응답 구조: { data: {...}, message, resultCode } 또는 직접 데이터
-      // 기대하는 응답 구조:
-      // {
-      //   data: {
-      //     hotel: { todayBookings, totalRevenue, totalRooms, activeRooms, newMembers, today: {...} },
-      //     chartData: { labels: [...], revenue: [...], bookings: [...] },
-      //     recentBookings: [...]
-      //   }
-      // }
-      const data = response?.data || response;
+      const data = extractApiData(response);
       setStats(data);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "데이터를 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "데이터를 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setLoading(false);

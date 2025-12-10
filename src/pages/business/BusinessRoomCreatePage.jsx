@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { businessRoomApi } from "../../api/businessRoomApi";
 import BusinessRoomForm from "../../components/business/rooms/BusinessRoomForm";
 import AlertModal from "../../components/common/AlertModal";
+import { extractErrorMessage } from "../../utils/apiUtils";
 
 const BusinessRoomCreatePage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const BusinessRoomCreatePage = () => {
         navigate("/business/rooms");
       }, 1000);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "객실 등록에 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "객실 등록에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };

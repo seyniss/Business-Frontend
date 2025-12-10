@@ -5,6 +5,7 @@ import BusinessBookingDetail from "../../components/business/bookings/BusinessBo
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import AlertModal from "../../components/common/AlertModal";
+import { extractApiData, extractErrorMessage } from "../../utils/apiUtils";
 
 const BusinessBookingDetailPage = () => {
   const { id } = useParams();
@@ -21,10 +22,11 @@ const BusinessBookingDetailPage = () => {
   const fetchBooking = async () => {
     try {
       setLoading(true);
-      const data = await businessBookingApi.getBookingById(id);
-      setBooking(data);
+      const response = await businessBookingApi.getBookingById(id);
+      const bookingData = extractApiData(response);
+      setBooking(bookingData);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "예약 정보를 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "예약 정보를 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -36,7 +38,7 @@ const BusinessBookingDetailPage = () => {
       await businessBookingApi.updateBookingStatus(bookingId, status);
       fetchBooking();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "상태 변경에 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "상태 변경에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };

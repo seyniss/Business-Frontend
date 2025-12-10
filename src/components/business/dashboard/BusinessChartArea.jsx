@@ -9,12 +9,7 @@ import {
   Bar,
   Line,
 } from "recharts";
-
-const FALLBACK_CHART = {
-  labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
-  revenue: [2000000, 2500000, 2200000, 2800000, 3000000, 3200000],
-  bookings: [45, 58, 52, 67, 72, 78],
-};
+import EmptyState from "../../common/EmptyState";
 
 const BusinessChartArea = ({ data }) => {
   const formatCurrency = (value) =>
@@ -25,22 +20,37 @@ const BusinessChartArea = ({ data }) => {
   // 백엔드 응답 구조에 맞게 데이터 추출
   // data.data가 있으면 data를 사용, 없으면 data를 직접 사용
   // 백엔드 응답 구조: { labels: [...], revenue: [...], bookings: [...] }
-  // labels, revenue, bookings는 필수이며 같은 길이의 배열이어야 함
   const rawChartData = data?.data || data || {};
   
-  // null 체크 강화: 백엔드에서 null을 반환할 수 있으므로 기본값 사용
-  const labels = rawChartData?.labels?.length ? rawChartData.labels : FALLBACK_CHART.labels;
-  const revenues = rawChartData?.revenue?.length ? rawChartData.revenue : FALLBACK_CHART.revenue;
-  const bookings = rawChartData?.bookings?.length ? rawChartData.bookings : FALLBACK_CHART.bookings;
+  // 데이터 유효성 검사
+  const labels = rawChartData?.labels || [];
+  const revenues = rawChartData?.revenue || [];
+  const bookings = rawChartData?.bookings || [];
+  
+  // 데이터가 없는 경우 빈 상태 표시 (labels가 있으면 데이터가 있다고 간주)
+  // bookings가 0이어도 유효한 데이터로 처리
+  const hasData = labels.length > 0 && (revenues.length > 0 || bookings.length > 0);
+  
+  if (!hasData) {
+    return (
+      <div className="chart-section">
+        <div className="chart-header">
+          <h2>매출 추이</h2>
+          <p className="chart-subtitle">최근 6개월 매출과 예약 수</p>
+        </div>
+        <div className="chart-wrapper" style={{ minHeight: "320px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <EmptyState message="매출 데이터가 없습니다. 예약이 발생하면 그래프가 표시됩니다." />
+        </div>
+      </div>
+    );
+  }
 
-  const chartData = labels.map((label, index) => ({
-    month: label,
-    revenue:
-      revenues[index] ??
-      FALLBACK_CHART.revenue[index % FALLBACK_CHART.revenue.length],
-    bookings:
-      bookings[index] ??
-      FALLBACK_CHART.bookings[index % FALLBACK_CHART.bookings.length],
+  // 데이터 길이가 일치하지 않으면 최소 길이로 맞춤
+  const minLength = Math.min(labels.length, revenues.length, bookings.length);
+  const chartData = Array.from({ length: minLength }, (_, index) => ({
+    month: labels[index] || `기간 ${index + 1}`,
+    revenue: revenues[index] || 0,
+    bookings: bookings[index] || 0,
   }));
 
   return (

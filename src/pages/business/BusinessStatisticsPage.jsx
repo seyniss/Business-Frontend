@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import { extractApiData, extractErrorMessage } from "../../utils/apiUtils";
 
 const PERIOD_OPTIONS = [
   { value: "week", label: "주간" },
@@ -38,11 +39,10 @@ const BusinessStatisticsPage = () => {
     try {
       setLoading(true);
       const response = await businessStatsApi.getStatistics();
-      // 백엔드 응답 구조: { data: {...}, message, resultCode } 또는 직접 데이터
-      const data = response?.data || response;
+      const data = extractApiData(response);
       setStats(data);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "통계를 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "통계를 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -54,11 +54,10 @@ const BusinessStatisticsPage = () => {
       setChartLoading(true);
       setPeriod(nextPeriod);
       const response = await businessStatsApi.getRevenueStats(nextPeriod);
-      // 백엔드 응답 구조: { data: {...}, message, resultCode } 또는 직접 데이터
-      const data = response?.data || response;
+      const data = extractApiData(response);
       setRevenueTrend(data);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "매출 추이를 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "매출 추이를 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setChartLoading(false);

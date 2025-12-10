@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import businessAuthApi from "../api/businessAuthApi";
+import { extractApiData } from "../utils/apiUtils";
+import { logger } from "../utils/logger";
 
 export const BusinessAuthContext = createContext(null);
 
@@ -16,13 +18,12 @@ export const BusinessAuthProvider = ({ children }) => {
       const token = localStorage.getItem("businessToken");
       if (token) {
         const response = await businessAuthApi.getMyInfo();
-        // 백엔드 응답 구조: { data: {...}, message, resultCode }
-        const businessInfo = response?.data || response;
+        const businessInfo = extractApiData(response);
         setBusinessInfo(businessInfo);
       }
     } catch (error) {
       localStorage.removeItem("businessToken");
-      console.error("인증 확인 실패:", error);
+      logger.error("인증 확인 실패:", error);
     } finally {
       setLoading(false);
     }
@@ -30,9 +31,9 @@ export const BusinessAuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const response = await businessAuthApi.login(credentials);
-    // 백엔드 응답 구조: { data: { token, business }, message, resultCode }
-    const token = response?.data?.token || response?.token;
-    const business = response?.data?.business || response?.business;
+    const data = extractApiData(response);
+    const token = data?.token || response?.token;
+    const business = data?.business || response?.business;
     
     if (token) {
       localStorage.setItem("businessToken", token);
@@ -41,7 +42,7 @@ export const BusinessAuthProvider = ({ children }) => {
       setBusinessInfo(business);
     }
     
-    console.log("로그인 응답:", response);
+    logger.log("로그인 응답:", response);
     
     // 호텔 정보 확인을 위해 반환값에 hasHotel 플래그 추가
     const hasHotel = await checkHotelExists();
@@ -52,15 +53,14 @@ export const BusinessAuthProvider = ({ children }) => {
     try {
       const { businessHotelApi } = await import("../api/businessHotelApi");
       const hotelData = await businessHotelApi.getMyHotel();
-      // 백엔드 응답 구조에 따라 조정 필요
-      const hotel = hotelData?.data || hotelData;
+      const hotel = extractApiData(hotelData);
       return !!(hotel && hotel.id); // 호텔이 존재하는지 확인
     } catch (error) {
       // 호텔이 없거나 에러가 발생한 경우 (404 등)
       if (error.response?.status === 404) {
         return false;
       }
-      console.log("호텔 정보 확인 실패:", error);
+      logger.log("호텔 정보 확인 실패:", error);
       return false;
     }
   };
@@ -76,9 +76,9 @@ export const BusinessAuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     const response = await businessAuthApi.signup(userData);
-    // 백엔드 응답 구조: { data: { token, business }, message, resultCode }
-    const token = response?.data?.token || response?.token;
-    const business = response?.data?.business || response?.business;
+    const data = extractApiData(response);
+    const token = data?.token || response?.token;
+    const business = data?.business || response?.business;
     
     if (token) {
       localStorage.setItem("businessToken", token);
@@ -87,7 +87,7 @@ export const BusinessAuthProvider = ({ children }) => {
       setBusinessInfo(business);
     }
     
-    console.log("회원가입 응답:", response);
+    logger.log("회원가입 응답:", response);
     
     // 신규 가입자는 호텔이 없으므로 false 반환
     return { hasHotel: false };
@@ -95,8 +95,7 @@ export const BusinessAuthProvider = ({ children }) => {
 
   const kakaoLogin = async (kakaoToken) => {
     const response = await businessAuthApi.kakaoLogin(kakaoToken);
-    // 백엔드 응답 구조: { data: { token, business, needsAdditionalInfo }, message, resultCode }
-    const data = response?.data || response;
+    const data = extractApiData(response);
     
     // 추가 정보가 필요한 경우
     if (data.needsAdditionalInfo) {

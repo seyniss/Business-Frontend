@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { businessReviewApi } from "../../api/businessReviewApi";
 import AlertModal from "../../components/common/AlertModal";
+import { extractApiArray, extractErrorMessage } from "../../utils/apiUtils";
+import { logger } from "../../utils/logger";
+import Loader from "../../components/common/Loader";
 
 const BusinessReviewListPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -16,12 +19,10 @@ const BusinessReviewListPage = () => {
   const fetchReviews = async () => {
     try {
       const response = await businessReviewApi.getReviews();
-      // 백엔드 응답 구조: { data: { reviews: [...] } } 또는 { reviews: [...] } 또는 { data: [...] }
-      // 백엔드 명세서에 따르면 reviews 배열 직접 반환 가능
-      const reviewsData = response?.data?.reviews || response?.reviews || response?.data || [];
-      setReviews(Array.isArray(reviewsData) ? reviewsData : []);
+      const reviewsData = extractApiArray(response, "reviews");
+      setReviews(reviewsData);
     } catch (error) {
-      console.error("Failed to fetch reviews:", error);
+      logger.error("Failed to fetch reviews:", error);
       setReviews([]);
     } finally {
       setLoading(false);
@@ -35,7 +36,7 @@ const BusinessReviewListPage = () => {
       setReplyModal({ open: false, reviewId: null, replyText: "" });
       fetchReviews();
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "답변 등록에 실패했습니다.";
+      const errorMessage = extractErrorMessage(error, "답변 등록에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
@@ -51,7 +52,7 @@ const BusinessReviewListPage = () => {
       setReportModal({ open: false, reviewId: null, reason: "" });
       fetchReviews();
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "신고 처리에 실패했습니다.";
+      const errorMessage = extractErrorMessage(error, "신고 처리에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
@@ -74,7 +75,7 @@ const BusinessReviewListPage = () => {
   };
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return <Loader fullScreen />;
   }
 
   return (

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { businessRoomApi } from "../../api/businessRoomApi";
+import { extractApiArray, extractErrorMessage } from "../../utils/apiUtils";
+import { logger } from "../../utils/logger";
 
 const BusinessRoomListPage = () => {
   const navigate = useNavigate();
@@ -13,11 +15,12 @@ const BusinessRoomListPage = () => {
 
   const fetchRooms = async () => {
     try {
-      const data = await businessRoomApi.getRooms();
-      setRooms(data?.data.rooms);
+      const response = await businessRoomApi.getRooms();
+      const roomsData = extractApiArray(response, "rooms");
+      setRooms(roomsData);
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "객실 목록을 불러오는데 실패했습니다.";
-      console.error("Failed to fetch rooms:", errorMessage);
+      const errorMessage = extractErrorMessage(error, "객실 목록을 불러오는데 실패했습니다.");
+      logger.error("Failed to fetch rooms:", errorMessage, error);
     } finally {
       setLoading(false);
     }

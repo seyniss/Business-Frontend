@@ -7,6 +7,7 @@ import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import EmptyState from "../../components/common/EmptyState";
 import AlertModal from "../../components/common/AlertModal";
+import { extractApiArray, extractPagination, extractErrorMessage } from "../../utils/apiUtils";
 
 const BusinessBookingListPage = () => {
   const [bookings, setBookings] = useState([]);
@@ -34,14 +35,12 @@ const BusinessBookingListPage = () => {
         ...filters,
         page: currentPage,
       });
-      // 백엔드 응답 구조: { data: [...] } 배열 직접 반환
-      // 백엔드 명세서에 따르면 data 배열 직접 반환
-      const bookingsData = response?.data || response?.bookings || response || [];
-      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
-      // 페이지네이션 정보는 별도 필드로 전달될 수 있음
-      setTotalPages(response?.totalPages || response?.pagination?.totalPages || 1);
+      const bookingsData = extractApiArray(response, "bookings");
+      setBookings(bookingsData);
+      const pagination = extractPagination(response);
+      setTotalPages(pagination.totalPages);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "예약 목록을 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "예약 목록을 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -69,7 +68,7 @@ const BusinessBookingListPage = () => {
       await businessBookingApi.updateBookingStatus(id, status);
       fetchBookings();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "상태 변경에 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "상태 변경에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };

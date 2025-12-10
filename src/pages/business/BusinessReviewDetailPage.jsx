@@ -4,6 +4,9 @@ import { businessReviewApi } from "../../api/businessReviewApi";
 import BusinessReviewDetail from "../../components/business/reviews/BusinessReviewDetail";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import AlertModal from "../../components/common/AlertModal";
+import ConfirmDialog from "../../components/common/ConfirmDialog";
+import { extractApiData, extractErrorMessage } from "../../utils/apiUtils";
 
 const BusinessReviewDetailPage = () => {
   const { id } = useParams();
@@ -11,6 +14,8 @@ const BusinessReviewDetailPage = () => {
   const [review, setReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [alertModal, setAlertModal] = useState({ isOpen: false, message: "", type: "info" });
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, reviewId: null });
 
   useEffect(() => {
     fetchReview();
@@ -19,10 +24,11 @@ const BusinessReviewDetailPage = () => {
   const fetchReview = async () => {
     try {
       setLoading(true);
-      const data = await businessReviewApi.getReviewById(id);
-      setReview(data);
+      const response = await businessReviewApi.getReviewById(id);
+      const reviewData = extractApiData(response);
+      setReview(reviewData);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "리뷰 정보를 불러오는데 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "리뷰 정보를 불러오는데 실패했습니다.");
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -35,7 +41,7 @@ const BusinessReviewDetailPage = () => {
       setAlertModal({ isOpen: true, message: "답변이 등록되었습니다.", type: "success" });
       fetchReview();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || "답변 등록에 실패했습니다.";
+      const errorMessage = extractErrorMessage(err, "답변 등록에 실패했습니다.");
       setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
     }
   };
@@ -52,7 +58,7 @@ const BusinessReviewDetailPage = () => {
         setConfirmDialog({ isOpen: false, reviewId: null });
         fetchReview();
       } catch (err) {
-        const errorMessage = err.response?.data?.message || err.message || "신고에 실패했습니다.";
+        const errorMessage = extractErrorMessage(err, "신고에 실패했습니다.");
         setAlertModal({ isOpen: true, message: errorMessage, type: "error" });
       }
     }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logger } from "../utils/logger";
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
@@ -17,8 +18,8 @@ axiosClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     // 개발 모드에서 요청 데이터 로깅
-    if (import.meta.env.DEV && config.data) {
-      console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, config.data);
+    if (config.data) {
+      logger.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, config.data);
     }
     return config;
   },
